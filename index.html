@@ -10,21 +10,49 @@
 body{
 margin:0;
 font-family:Arial;
-background: radial-gradient(circle at top, #0b0c1a, #000);
+background: radial-gradient(circle at top, #0a0a1f, #000);
 color:white;
 text-align:center;
 overflow:hidden;
 }
 
+/* animated particles */
+body::before{
+content:"";
+position:fixed;
+width:200%;
+height:200%;
+background-image: radial-gradient(white 1px, transparent 1px);
+background-size:50px 50px;
+opacity:0.05;
+animation:move 20s linear infinite;
+}
+
+@keyframes move{
+from{transform:translateY(0px);}
+to{transform:translateY(-200px);}
+}
+
 header{
-padding:15px;
-font-size:24px;
-background:#111;
+padding:18px;
+font-size:26px;
+font-weight:bold;
+background:rgba(255,255,255,0.05);
+backdrop-filter: blur(8px);
+border-bottom:1px solid rgba(255,255,255,0.1);
+position:relative;
+z-index:2;
 }
 
 .brand{
 font-size:12px;
 opacity:0.7;
+animation: glow 2s infinite alternate;
+}
+
+@keyframes glow{
+from{text-shadow:0 0 5px #00ffcc;}
+to{text-shadow:0 0 15px #00ffcc;}
 }
 
 .screen{display:none;padding:15px;}
@@ -35,81 +63,76 @@ display:grid;
 grid-template-columns:repeat(2,1fr);
 gap:10px;
 padding:10px;
+position:relative;
+z-index:2;
 }
 
 .card{
-background:#1a1a2e;
+background:rgba(255,255,255,0.06);
 padding:20px;
-border-radius:12px;
+border-radius:14px;
+cursor:pointer;
+transition:0.3s;
+border:1px solid rgba(255,255,255,0.1);
+}
+
+.card:hover{
+transform:scale(1.08);
+box-shadow:0 0 20px #00ffcc;
+}
+
+button{
+padding:10px 15px;
+margin-top:10px;
+border:none;
+border-radius:8px;
+background:linear-gradient(45deg,#00ffcc,#00aaff);
+font-weight:bold;
 cursor:pointer;
 transition:0.3s;
 }
 
-.card:hover{
+button:hover{
 transform:scale(1.05);
-box-shadow:0 0 15px #00ffcc;
+}
+
+.back{
+background:linear-gradient(45deg,#ff4d4d,#ff0066);
+color:white;
 }
 
 input{
 padding:10px;
 width:80%;
 margin-top:10px;
-border-radius:8px;
 border:none;
+border-radius:8px;
 }
 
-button{
-padding:10px 14px;
+.result{
 margin-top:10px;
-border:none;
-border-radius:8px;
-background:#00ffcc;
-font-weight:bold;
+font-size:18px;
 }
 
-.back{background:#ff4d4d;color:white;}
-
-.result{margin-top:10px;font-size:18px}
-
-/* FLAPPY */
-#game{
+footer{
+position:absolute;
+bottom:10px;
 width:100%;
-height:320px;
-background:#000;
-position:relative;
-overflow:hidden;
-border-radius:10px;
+font-size:14px;
+opacity:0.8;
+z-index:2;
 }
 
-#bird{
-width:25px;
-height:25px;
-background:yellow;
-position:absolute;
-left:60px;
-top:120px;
-border-radius:50%;
+.slogan{
+color:#00ffcc;
+margin-top:5px;
+font-size:13px;
+animation:fade 3s ease-in-out;
 }
 
-.pipe{
-position:absolute;
-width:40px;
-background:green;
-right:-60px;
-}
-
-.pipeTop{
-top:0;
-}
-
-.pipeBottom{
-bottom:0;
-}
-
-.gameOver{
-font-size:22px;
-color:red;
-margin-top:10px;
+@keyframes fade{
+from{opacity:0;}
+to{opacity:1;}
 }
 
 </style>
@@ -119,7 +142,8 @@ margin-top:10px;
 
 <header>
 🔥 FUNORA STUDIO
-<div class="brand">Vedgames Production</div>
+<div class="brand">Made by Vedgames Production</div>
+<div class="slogan" id="slogan"></div>
 </header>
 
 <!-- HOME -->
@@ -128,8 +152,8 @@ margin-top:10px;
 <div class="menu">
 
 <div class="card" onclick="openGame('lie')">🕵️ Lie Detector</div>
-<div class="card" onclick="openGame('roast')">🔥 Roast</div>
-<div class="card" onclick="openGame('aura')">⚡ Aura</div>
+<div class="card" onclick="openGame('roast')">🔥 Roast Generator</div>
+<div class="card" onclick="openGame('aura')">⚡ Aura Checker</div>
 <div class="card" onclick="openGame('flappy')">🐤 Flappy Bird</div>
 
 </div>
@@ -137,7 +161,7 @@ margin-top:10px;
 
 <!-- LIE -->
 <div id="lie" class="screen">
-<h2>🕵️ Lie Detector</h2>
+<h2>Lie Detector</h2>
 <input id="lieInput" placeholder="Enter sentence">
 <br>
 <button onclick="lie()">SCAN</button>
@@ -147,7 +171,7 @@ margin-top:10px;
 
 <!-- ROAST -->
 <div id="roast" class="screen">
-<h2>🔥 Roast Generator</h2>
+<h2>Roast Generator</h2>
 <input id="roastInput" placeholder="Enter name">
 <br>
 <button onclick="roast()">ROAST</button>
@@ -157,7 +181,7 @@ margin-top:10px;
 
 <!-- AURA -->
 <div id="aura" class="screen">
-<h2>⚡ Aura Checker</h2>
+<h2>Aura Checker</h2>
 <input id="auraInput" placeholder="Enter name">
 <br>
 <button onclick="aura()">CHECK</button>
@@ -177,10 +201,12 @@ margin-top:10px;
 
 <button onclick="jump()">JUMP</button>
 
-<div id="msg"></div>
-
-<br><button class="back" onclick="resetGame();back()">Back</button>
+<br><button class="back" onclick="back()">Back</button>
 </div>
+
+<footer>
+© Vedgames Production • Ultimate Game Hub
+</footer>
 
 <script>
 
@@ -189,6 +215,7 @@ function openGame(id){
 document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
 document.getElementById(id).classList.add('active');
 }
+
 function back(){
 document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
 document.getElementById('home').classList.add('active');
@@ -197,24 +224,20 @@ document.getElementById('home').classList.add('active');
 /* LIE */
 function lie(){
 let t=document.getElementById("lieInput").value;
-if(!t){
-if(navigator.vibrate) navigator.vibrate(200);
-document.getElementById("lieres").innerHTML="⚠️ Enter text!";
-return;
-}
+if(!t) return alert("Enter text!");
 document.getElementById("lieres").innerHTML=
 `"${t}" → ${Math.floor(Math.random()*100)}% FAKE 💀`;
 }
 
 /* ROAST */
 function roast(){
-let n=document.getElementById("roastInput").value;
-if(!n) n="Player";
+let n=document.getElementById("roastInput").value || "Player";
 
 let arr=[
 n+" = NPC energy 💀",
-n+" studies from reels 😂",
-n+" brain buffering..."
+n+" runs on low RAM 😂",
+n+" is buffering in real life ⏳",
+n+" lost update patch 🤡"
 ];
 
 document.getElementById("roastres").innerHTML=
@@ -223,8 +246,7 @@ arr[Math.floor(Math.random()*arr.length)];
 
 /* AURA */
 function aura(){
-let n=document.getElementById("auraInput").value;
-if(!n) n="Player";
+let n=document.getElementById("auraInput").value || "Player";
 
 let a=Math.floor(Math.random()*1000);
 
@@ -237,95 +259,22 @@ document.getElementById("aurares").innerHTML=
 `${n} → ${a} (${lvl})`;
 }
 
-/* FLAPPY */
-let bird=document.getElementById("bird");
-let y=120;
-let velocity=0;
-let gravity=2;
-let score=0;
-let pipes=[];
-let running=true;
+/* SLOGANS */
+let slogans=[
+"Play hard. Laugh harder.",
+"Made for chaos gamers only.",
+"Every click creates legend.",
+"Your fun, our code.",
+"Glitch the boredom away.",
+"One hub. Infinite games.",
+"Powered by pure fun energy.",
+"Warning: too addictive 💀",
+"Born to game, forced to study.",
+"Vedgames = Ultimate Chaos Studio"
+];
 
-function jump(){
-velocity=-8;
-}
-
-function createPipe(){
-let gap=120;
-let topH=Math.floor(Math.random()*150)+50;
-
-let pipeTop=document.createElement("div");
-pipeTop.className="pipe pipeTop";
-pipeTop.style.height=topH+"px";
-pipeTop.style.right="-60px";
-
-let pipeBottom=document.createElement("div");
-pipeBottom.className="pipe pipeBottom";
-pipeBottom.style.height=(320-topH-gap)+"px";
-pipeBottom.style.right="-60px";
-
-document.getElementById("game").appendChild(pipeTop);
-document.getElementById("game").appendChild(pipeBottom);
-
-pipes.push({top:pipeTop,bottom:pipeBottom,x:-60});
-}
-
-function gameLoop(){
-
-if(!running) return;
-
-velocity+=gravity;
-y+=velocity;
-
-if(y<0) y=0;
-if(y>295) y=295;
-
-bird.style.top=y+"px";
-
-/* pipes movement */
-if(Math.random()<0.02){
-createPipe();
-score++;
-document.getElementById("score").innerHTML=score;
-}
-
-pipes.forEach(p=>{
-let x=parseInt(p.top.style.right);
-x+=3;
-
-p.top.style.right=x+"px";
-p.bottom.style.right=x+"px";
-
-/* collision */
-if(x>40 && x<100){
-let topH=parseInt(p.top.style.height);
-let gap=120;
-
-if(y < topH || y > topH+gap){
-gameOver();
-}
-}
-
-if(x>400){
-p.top.remove();
-p.bottom.remove();
-}
-});
-
-requestAnimationFrame(gameLoop);
-}
-
-function gameOver(){
-running=false;
-document.getElementById("msg").innerHTML=
-"<div class='gameOver'>💀 GAME OVER</div>";
-}
-
-function resetGame(){
-location.reload();
-}
-
-gameLoop();
+document.getElementById("slogan").innerText =
+slogans[Math.floor(Math.random()*slogans.length)];
 
 </script>
 
