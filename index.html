@@ -3,116 +3,76 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Funora - Vedgames Production</title>
+<title>Funora Studio</title>
 
 <style>
 
 body{
 margin:0;
 font-family:Arial;
-background: radial-gradient(circle at top, #0f1020, #000);
+background:#070812;
 color:white;
 text-align:center;
 overflow:hidden;
 }
 
 header{
-padding:18px;
-font-size:26px;
-font-weight:bold;
-background: rgba(255,255,255,0.05);
-border-bottom:1px solid rgba(255,255,255,0.1);
+padding:15px;
+font-size:24px;
+background:#111;
 }
 
-.brand{
-font-size:12px;
-opacity:0.7;
-}
-
-.screen{
-display:none;
-padding:20px;
-animation:fade 0.4s ease;
-}
-
-.active{
-display:block;
-}
-
-@keyframes fade{
-from{opacity:0; transform:scale(0.95);}
-to{opacity:1; transform:scale(1);}
-}
+.screen{display:none;padding:15px;}
+.active{display:block;}
 
 .menu{
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
-gap:12px;
-padding:15px;
+grid-template-columns:repeat(2,1fr);
+gap:10px;
+padding:10px;
 }
 
 .card{
-background: rgba(255,255,255,0.06);
+background:#1a1a2e;
 padding:20px;
-border-radius:16px;
+border-radius:12px;
 cursor:pointer;
-transition:0.3s;
-border:1px solid rgba(255,255,255,0.1);
-}
-
-.card:hover{
-transform:scale(1.05);
-box-shadow:0 0 15px #00ffcc;
 }
 
 button{
-padding:12px 16px;
+padding:10px;
 margin-top:10px;
 border:none;
-border-radius:10px;
-background:linear-gradient(45deg,#00ffcc,#00aaff);
+border-radius:8px;
+background:#00ffcc;
 font-weight:bold;
-cursor:pointer;
 }
 
-.back{
-background:linear-gradient(45deg,#ff4d4d,#ff0066);
-color:white;
-}
+.back{background:#ff4d4d;color:white;}
 
 input{
-padding:12px;
+padding:10px;
 width:80%;
-max-width:300px;
 margin-top:10px;
-border-radius:10px;
+border-radius:8px;
 border:none;
 }
 
-.result{
-margin-top:12px;
-font-size:18px;
-}
+.result{margin-top:10px;font-size:18px}
 
-.glow{
-color:#00ffcc;
-text-shadow:0 0 10px #00ffcc;
-}
-
-/* FLAPPY BIRD */
-#gameArea{
+/* FLAPPY */
+#game{
 width:100%;
 height:300px;
-background:#111;
+background:#000;
 position:relative;
 overflow:hidden;
-margin-top:10px;
 border-radius:10px;
 }
 
-.bird{
-width:30px;
-height:30px;
+#bird{
+width:25px;
+height:25px;
 background:yellow;
 position:absolute;
 left:50px;
@@ -121,9 +81,9 @@ border-radius:50%;
 }
 
 .pipe{
+position:absolute;
 width:40px;
 background:green;
-position:absolute;
 right:-40px;
 }
 
@@ -132,25 +92,18 @@ right:-40px;
 
 <body>
 
-<header>
-🔥 FUNORA
-<div class="brand">Vedgames Production</div>
-</header>
+<header>🔥 FUNORA STUDIO</header>
 
 <!-- HOME -->
 <div id="home" class="screen active">
 
-<h2 class="glow">Choose Game</h2>
-
 <div class="menu">
 
-<div class="card" onclick="openGame('lie')">🕵️ Lie</div>
-<div class="card" onclick="openGame('roast')">🔥 Roast</div>
-<div class="card" onclick="openGame('aura')">⚡ Aura</div>
-<div class="card" onclick="openGame('battle')">⚔️ Battle</div>
-<div class="card" onclick="openGame('click')">🏆 Click</div>
-<div class="card" onclick="openGame('quiz')">🧠 Quiz</div>
-<div class="card" onclick="openGame('flappy')">🐤 Flappy</div>
+<div class="card" onclick="openGame('lie')">Lie</div>
+<div class="card" onclick="openGame('roast')">Roast</div>
+<div class="card" onclick="openGame('aura')">Aura</div>
+<div class="card" onclick="openGame('quiz')">Quiz</div>
+<div class="card" onclick="openGame('flappy')">Flappy</div>
 
 </div>
 </div>
@@ -158,74 +111,59 @@ right:-40px;
 <!-- LIE -->
 <div id="lie" class="screen">
 <h2>Lie Detector</h2>
-<button onclick="lie()">SCAN</button>
+<input id="lieName" placeholder="Enter text">
+<br>
+<button onclick="lie()">Scan</button>
 <div class="result" id="lieres"></div>
 <br><button class="back" onclick="back()">Back</button>
 </div>
 
 <!-- ROAST -->
 <div id="roast" class="screen">
-<h2>Roast</h2>
-<input id="name" placeholder="Name">
+<h2>Roast Generator</h2>
+<input id="roastName" placeholder="Enter name">
 <br>
-<button onclick="roast()">ROAST</button>
+<button onclick="roast()">Roast</button>
 <div class="result" id="roastres"></div>
 <br><button class="back" onclick="back()">Back</button>
 </div>
 
 <!-- AURA -->
 <div id="aura" class="screen">
-<h2>Aura</h2>
-<button onclick="aura()">CHECK</button>
+<h2>Aura Check</h2>
+<input id="auraName" placeholder="Enter name">
+<br>
+<button onclick="aura()">Check</button>
 <div class="result" id="aurares"></div>
-<br><button class="back" onclick="back()">Back</button>
-</div>
-
-<!-- BATTLE -->
-<div id="battle" class="screen">
-<h2>Battle</h2>
-<input id="p1" placeholder="P1"><br>
-<input id="p2" placeholder="P2"><br>
-<button onclick="battle()">FIGHT</button>
-<div class="result" id="battleres"></div>
-<br><button class="back" onclick="back()">Back</button>
-</div>
-
-<!-- CLICK -->
-<div id="click" class="screen">
-<h2>Click Battle</h2>
-<input id="player" placeholder="Name">
-<h3>Score: <span id="score">0</span></h3>
-<button onclick="clickGame()">CLICK</button>
-<div class="result" id="time"></div>
-
-<h3>Leaderboard</h3>
-<div id="board"></div>
-
 <br><button class="back" onclick="back()">Back</button>
 </div>
 
 <!-- QUIZ -->
 <div id="quiz" class="screen">
-<h2>🧠 Maths Quiz</h2>
+<h2>Hard Maths Quiz</h2>
+
 <h3 id="q"></h3>
 <input id="ans" placeholder="Answer">
 <br>
 <button onclick="check()">Submit</button>
 <div class="result" id="quizres"></div>
+<br>
+<button onclick="newQ()">New Question</button>
 <br><button class="back" onclick="back()">Back</button>
 </div>
 
 <!-- FLAPPY -->
 <div id="flappy" class="screen">
-<h2>🐤 Flappy Bird</h2>
+<h2>Flappy Bird</h2>
 
-<div id="gameArea">
-<div class="bird" id="bird"></div>
+<div id="game">
+<div id="bird"></div>
 </div>
 
-<button onclick="jump()">JUMP</button>
-<div class="result" id="flappyres"></div>
+<h3>Score: <span id="score">0</span></h3>
+
+<button onclick="jump()">Jump</button>
+
 <br><button class="back" onclick="back()">Back</button>
 </div>
 
@@ -236,72 +174,113 @@ function openGame(id){
 document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
 document.getElementById(id).classList.add('active');
 }
-
 function back(){
 document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
 document.getElementById('home').classList.add('active');
 }
 
-/* GAMES */
+/* LIE */
 function lie(){
-document.getElementById("lieres").innerHTML = Math.floor(Math.random()*100)+"% FAKE 💀";
+let t=document.getElementById("lieName").value;
+document.getElementById("lieres")=
+document.getElementById("lieres").innerHTML =
+Math.floor(Math.random()*100)+"% FAKE 💀";
 }
 
+/* ROAST */
 function roast(){
-let n=document.getElementById("name").value||"Player";
-let r=[n+" is lagging IRL 😂", n+" = NPC mode 💀", n+" has 2 brain cells 🤡"];
-document.getElementById("roastres").innerHTML=r[Math.floor(Math.random()*r.length)];
+let n=document.getElementById("roastName").value||"Player";
+let arr=[
+n+" = NPC energy 💀",
+n+" studies from reels 😂",
+n+" brain lagging..."
+];
+document.getElementById("roastres").innerHTML=
+arr[Math.floor(Math.random()*arr.length)];
 }
 
+/* AURA */
 function aura(){
+let n=document.getElementById("auraName").value||"Player";
 let a=Math.floor(Math.random()*1000);
-document.getElementById("aurares").innerHTML="Aura: "+a;
+document.getElementById("aurares").innerHTML=
+n+" Aura: "+a;
 }
 
-function battle(){
-let p1=document.getElementById("p1").value||"P1";
-let p2=document.getElementById("p2").value||"P2";
-let w=Math.random()<0.5?p1:p2;
-document.getElementById("battleres").innerHTML=w+" WINS 🏆";
+/* QUIZ */
+let a,b,op,correct;
+
+function newQ(){
+a=Math.floor(Math.random()*20);
+b=Math.floor(Math.random()*20);
+op=["+","-","*"][Math.floor(Math.random()*3)];
+
+if(op=="+") correct=a+b;
+if(op=="-") correct=a-b;
+if(op=="*") correct=a*b;
+
+document.getElementById("q").innerHTML=`${a} ${op} ${b} = ?`;
+document.getElementById("quizres").innerHTML="";
+}
+newQ();
+
+function check(){
+let ans=document.getElementById("ans").value;
+document.getElementById("quizres").innerHTML=
+(ans==correct)?"✔ Correct":"❌ Wrong";
+newQ();
+document.getElementById("ans").value="";
 }
 
-/* CLICK GAME */
+/* FLAPPY */
+let bird=document.getElementById("bird");
+let y=120;
+let gravity=2;
+let velocity=0;
 let score=0;
-function clickGame(){
-let name=document.getElementById("player").value;
-if(!name){
-if(navigator.vibrate) navigator.vibrate(200);
-document.getElementById("time").innerHTML="Enter name!";
-return;
+
+let pipes=[];
+
+function jump(){
+velocity=-8;
 }
+
+function gameLoop(){
+
+velocity+=gravity;
+y+=velocity;
+
+if(y<0) y=0;
+if(y>275) y=275;
+
+bird.style.top=y+"px";
+
+/* simple pipe logic */
+if(Math.random()<0.02){
+let pipe=document.createElement("div");
+pipe.className="pipe";
+pipe.style.height=(Math.random()*150+50)+"px";
+pipe.style.top="0px";
+pipe.style.right="-40px";
+document.getElementById("game").appendChild(pipe);
+pipes.push(pipe);
 score++;
 document.getElementById("score").innerHTML=score;
 }
 
-/* QUIZ */
-let num1=Math.floor(Math.random()*10);
-let num2=Math.floor(Math.random()*10);
-document.getElementById("q").innerHTML=`${num1} + ${num2} = ?`;
+pipes.forEach(p=>{
+let r=parseInt(p.style.right);
+p.style.right=(r+2)+"px";
 
-function check(){
-let ans=document.getElementById("ans").value;
-let correct=num1+num2;
-document.getElementById("quizres").innerHTML=
-ans==correct?"✔ Correct":"❌ Wrong";
+if(r>350){
+p.remove();
+}
+});
+
+requestAnimationFrame(gameLoop);
 }
 
-/* FLAPPY SIMPLE */
-let bird=document.getElementById("bird");
-let y=120;
-
-function jump(){
-y-=30;
-bird.style.top=y+"px";
-setTimeout(()=>{
-y+=20;
-bird.style.top=y+"px";
-},300);
-}
+gameLoop();
 
 </script>
 
