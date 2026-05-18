@@ -1,88 +1,92 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fun Hub</title>
+<title>Funora - Vedgames Production</title>
 
 <style>
 
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Arial;
-}
-
 body{
-background:#0f0f0f;
+margin:0;
+font-family:Arial;
+background: radial-gradient(circle at top, #1a1a2e, #000);
 color:white;
-min-height:100vh;
+text-align:center;
 }
 
 header{
 padding:20px;
-text-align:center;
-font-size:32px;
+font-size:28px;
 font-weight:bold;
-background:#141414;
-box-shadow:0 0 20px #000;
+background: rgba(255,255,255,0.05);
+backdrop-filter: blur(10px);
+border-bottom:1px solid rgba(255,255,255,0.1);
+}
+
+.brand{
+font-size:12px;
+opacity:0.7;
+margin-top:5px;
 }
 
 .menu{
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-gap:20px;
-padding:25px;
+grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+gap:15px;
+padding:20px;
 }
 
 .card{
-background:#1f1f1f;
-padding:30px;
-border-radius:20px;
-text-align:center;
-font-size:22px;
+background: rgba(255,255,255,0.06);
+border:1px solid rgba(255,255,255,0.1);
+padding:25px;
+border-radius:18px;
 cursor:pointer;
 transition:0.3s;
-border:2px solid transparent;
+box-shadow:0 0 10px rgba(0,255,200,0.1);
 }
 
 .card:hover{
-transform:scale(1.05);
+transform:translateY(-5px) scale(1.03);
+box-shadow:0 0 20px rgba(0,255,200,0.4);
 border-color:#00ffcc;
-box-shadow:0 0 20px #00ffcc;
 }
 
 .screen{
 display:none;
-padding:30px;
-text-align:center;
+padding:20px;
+animation:fade 0.4s ease;
 }
 
 .active{
 display:block;
 }
 
+@keyframes fade{
+from{opacity:0; transform:scale(0.95);}
+to{opacity:1; transform:scale(1);}
+}
+
 input{
-width:90%;
-max-width:350px;
-padding:14px;
+padding:12px;
+width:85%;
+max-width:300px;
+margin-top:10px;
+border-radius:10px;
 border:none;
-border-radius:12px;
-margin-top:20px;
-font-size:18px;
+outline:none;
 }
 
 button{
-padding:14px 24px;
+padding:12px 18px;
+margin-top:10px;
 border:none;
-border-radius:12px;
-margin-top:20px;
-font-size:18px;
-cursor:pointer;
-background:#00ffcc;
+border-radius:10px;
+background:linear-gradient(45deg,#00ffcc,#00aaff);
 color:black;
 font-weight:bold;
+cursor:pointer;
 transition:0.3s;
 }
 
@@ -90,16 +94,21 @@ button:hover{
 transform:scale(1.05);
 }
 
+.back{
+background:linear-gradient(45deg,#ff4d4d,#ff0066);
+color:white;
+margin-top:20px;
+}
+
 .result{
-margin-top:30px;
-font-size:28px;
+margin-top:20px;
+font-size:22px;
 font-weight:bold;
 }
 
-.back{
-background:#ff4444;
-color:white;
-margin-top:40px;
+.glow{
+color:#00ffcc;
+text-shadow:0 0 10px #00ffcc;
 }
 
 </style>
@@ -107,221 +116,121 @@ margin-top:40px;
 
 <body>
 
-<header>🔥 FUN HUB 🔥</header>
+<header>
+🔥 FUNORA
+<div class="brand">Made by Vedgames Production</div>
+</header>
 
-<!-- HOME MENU -->
+<!-- HOME -->
+<div id="home" class="screen active">
 
-<div id="home" class="active">
+<h2 class="glow">Choose Your Game</h2>
 
 <div class="menu">
 
-<div class="card" onclick="openScreen('lie')">
-🕵️ Lie Detector
-</div>
-
-<div class="card" onclick="openScreen('roast')">
-🔥 Roast Generator
-</div>
-
-<div class="card" onclick="openScreen('aura')">
-⚡ Aura Calculator
-</div>
-
-<div class="card" onclick="openScreen('battle')">
-⚔️ Friend Battle
-</div>
+<div class="card" onclick="openGame('lie')">🕵️ Lie Detector</div>
+<div class="card" onclick="openGame('roast')">🔥 Roast Generator</div>
+<div class="card" onclick="openGame('aura')">⚡ Aura Check</div>
+<div class="card" onclick="openGame('battle')">⚔️ Battle</div>
 
 </div>
 
 </div>
 
-<!-- LIE DETECTOR -->
-
+<!-- LIE -->
 <div id="lie" class="screen">
-
-<h1>🕵️ Lie Detector</h1>
-
-<input type="text" id="lieInput" placeholder="Type something...">
-
+<h2>🕵️ Lie Detector</h2>
+<input id="lieInput" placeholder="Type anything">
 <br>
-
-<button onclick="detectLie()">SCAN</button>
-
-<div class="result" id="lieResult"></div>
-
-<button class="back" onclick="goHome()">⬅ Back</button>
-
+<button onclick="lie()">SCAN</button>
+<div class="result" id="lieres"></div>
+<br>
+<button class="back" onclick="back()">⬅ Back</button>
 </div>
 
-<!-- ROAST GENERATOR -->
-
+<!-- ROAST -->
 <div id="roast" class="screen">
-
-<h1>🔥 Roast Generator</h1>
-
-<input type="text" id="roastInput" placeholder="Enter your name">
-
+<h2>🔥 Roast Generator</h2>
+<input id="name" placeholder="Enter name">
 <br>
-
-<button onclick="generateRoast()">ROAST ME</button>
-
-<div class="result" id="roastResult"></div>
-
-<button class="back" onclick="goHome()">⬅ Back</button>
-
+<button onclick="roast()">ROAST</button>
+<div class="result" id="roastres"></div>
+<br>
+<button class="back" onclick="back()">⬅ Back</button>
 </div>
 
-<!-- AURA CALCULATOR -->
-
+<!-- AURA -->
 <div id="aura" class="screen">
-
-<h1>⚡ Aura Calculator</h1>
-
-<input type="text" id="auraInput" placeholder="Enter your name">
-
+<h2>⚡ Aura Checker</h2>
+<button onclick="aura()">Check Aura</button>
+<div class="result" id="aurares"></div>
 <br>
-
-<button onclick="calculateAura()">CHECK AURA</button>
-
-<div class="result" id="auraResult"></div>
-
-<button class="back" onclick="goHome()">⬅ Back</button>
-
+<button class="back" onclick="back()">⬅ Back</button>
 </div>
 
-<!-- FRIEND BATTLE -->
-
+<!-- BATTLE -->
 <div id="battle" class="screen">
-
-<h1>⚔️ Friend Battle</h1>
-
-<input type="text" id="name1" placeholder="Friend 1">
-
+<h2>⚔️ Friend Battle</h2>
+<input id="p1" placeholder="Player 1"><br>
+<input id="p2" placeholder="Player 2"><br>
+<button onclick="battle()">FIGHT</button>
+<div class="result" id="battleres"></div>
 <br>
-
-<input type="text" id="name2" placeholder="Friend 2">
-
-<br>
-
-<button onclick="battleFriends()">START BATTLE</button>
-
-<div class="result" id="battleResult"></div>
-
-<button class="back" onclick="goHome()">⬅ Back</button>
-
+<button class="back" onclick="back()">⬅ Back</button>
 </div>
 
 <script>
 
-function openScreen(id){
-
-document.getElementById("home").style.display="none";
-
-let screens=document.querySelectorAll(".screen");
-
-screens.forEach(screen=>{
-screen.style.display="none";
-});
-
-document.getElementById(id).style.display="block";
-
+function openGame(id){
+document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+document.getElementById(id).classList.add('active');
 }
 
-function goHome(){
-
-document.getElementById("home").style.display="block";
-
-let screens=document.querySelectorAll(".screen");
-
-screens.forEach(screen=>{
-screen.style.display="none";
-});
-
+function back(){
+document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+document.getElementById('home').classList.add('active');
 }
 
-function detectLie(){
-
-let percent=Math.floor(Math.random()*100);
-
-let messages=[
-"🚨 MASSIVE LIE DETECTED",
-"💀 Bro even machine got shocked",
-"🤨 Suspicious activity found",
-"😂 Nobody believes this",
-"✅ Maybe true..."
-];
-
-let random=messages[Math.floor(Math.random()*messages.length)];
-
-document.getElementById("lieResult").innerHTML=
-percent + "% Fake<br><br>" + random;
-
+function lie(){
+let p = Math.floor(Math.random()*100);
+document.getElementById("lieres").innerHTML =
+"🚨 " + p + "% FAKE DETECTED";
 }
 
-function generateRoast(){
-
-let name=document.getElementById("roastInput").value;
+function roast(){
+let n = document.getElementById("name").value;
 
 let roasts=[
-
-name + " studies from YouTube comments 💀",
-
-name + " has more excuses than marks 😂",
-
-name + " runs on 1% battery and confidence ⚡",
-
-name + " thinks buffering is a personality 😭",
-
-name + " would lose against calculator in maths 🤡"
-
+n+" has NPC energy 💀",
+n+" studies from reels 😂",
+n+" is buffering in real life ⏳",
+n+" lost IQ in update 🤡"
 ];
 
-let random=roasts[Math.floor(Math.random()*roasts.length)];
-
-document.getElementById("roastResult").innerHTML=random;
-
+document.getElementById("roastres").innerHTML =
+roasts[Math.floor(Math.random()*roasts.length)];
 }
 
-function calculateAura(){
+function aura(){
+let a = Math.floor(Math.random()*1000);
 
-let aura=Math.floor(Math.random()*1000);
+let txt="";
+if(a>800) txt="👑 LEGENDARY AURA";
+else if(a>500) txt="😎 STRONG AURA";
+else txt="💀 NPC ENERGY";
 
-let result="";
-
-if(aura>800){
-result="👑 LEGENDARY AURA";
-}
-else if(aura>500){
-result="😎 STRONG AURA";
-}
-else{
-result="💀 NPC ENERGY";
+document.getElementById("aurares").innerHTML =
+a + " Aura → " + txt;
 }
 
-document.getElementById("auraResult").innerHTML=
-aura + " Aura Points<br><br>" + result;
+function battle(){
+let p1=document.getElementById("p1").value;
+let p2=document.getElementById("p2").value;
 
-}
+let win = Math.random()<0.5?p1:p2;
 
-function battleFriends(){
-
-let n1=document.getElementById("name1").value;
-let n2=document.getElementById("name2").value;
-
-let winner=Math.random()<0.5?n1:n2;
-
-let powers=[
-"🔥 Ultra Instinct",
-"⚡ God Speed",
-"💀 Villain Rage",
-"👑 Sigma Energy"
-];
-
-let power=powers[Math.floor(Math.random()*powers.length)];
-
-document.getElementById("battleResult").innerHTML=
-"🏆 " + winner + " WINS!<br><br>" + power;
-
+document.getElementById("battleres").innerHTML =
+"🏆 " + win + " WINS!";
 }
 
 </script>
