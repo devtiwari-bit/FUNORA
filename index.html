@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Funora - Veedgames Production</title>
+<title>Funora</title>
 
 <style>
 
@@ -24,8 +24,7 @@ font-size:22px;
 
 .brand{
 font-size:12px;
-opacity:0.8;
-color:#00ffcc;
+opacity:0.7;
 }
 
 .screen{display:none;padding:15px;}
@@ -99,6 +98,15 @@ color:red;
 font-size:22px;
 }
 
+footer{
+position:absolute;
+bottom:8px;
+width:100%;
+font-size:12px;
+color:white;
+opacity:0.8;
+}
+
 </style>
 </head>
 
@@ -107,6 +115,7 @@ font-size:22px;
 <header>
 🔥 FUNORA STUDIO
 <div class="brand">Veedgames Production</div>
+<div id="slogan"></div>
 </header>
 
 <!-- HOME -->
@@ -162,34 +171,47 @@ font-size:22px;
 
 <h3>Score: <span id="score">0</span></h3>
 
-<button onclick="startGame()">START</button>
-<button onclick="jump()">JUMP</button>
+<button onclick="startOrJump()">START / JUMP</button>
 
 <div id="msg"></div>
 
 <br><button class="back" onclick="back()">Back</button>
 </div>
 
+<footer>
+© VEEDGAMES PRODUCTION
+</footer>
+
 <script>
 
-/* SCREEN SYSTEM FIX */
+/* SLOGAN */
+let slogans=[
+"Play. Create. Dominate.",
+"Fun never ends.",
+"Made for gamers.",
+"Click. Play. Win.",
+"Chaos gaming hub.",
+"Level up your fun."
+];
+
+document.getElementById("slogan").innerText =
+slogans[Math.floor(Math.random()*slogans.length)];
+
+/* SCREEN SYSTEM */
 function show(id){
 document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
 document.getElementById(id).classList.add('active');
 }
 
-/* BACK FIX */
-function back(){
-resetFlappy();
-show('home');
-}
-
-/* OPEN GAME FIX */
 function openGame(id){
 resetFlappy();
 show(id);
-
 if(id==="flappy") initFlappy();
+}
+
+function back(){
+resetFlappy();
+show("home");
 }
 
 /* ---------------- LIE ---------------- */
@@ -213,16 +235,13 @@ function aura(){
 let n=document.getElementById("auraInput").value||"Player";
 let a=Math.floor(Math.random()*1000);
 
-let lvl="";
-if(a>800) lvl="GOD 👑";
-else if(a>500) lvl="STRONG 😎";
-else lvl="LOW 💀";
+let lvl=a>800?"GOD 👑":a>500?"STRONG 😎":"LOW 💀";
 
 document.getElementById("aurares").innerHTML=
 `${n} → ${a} (${lvl})`;
 }
 
-/* ---------------- FLAPPY FIX ---------------- */
+/* ---------------- FLAPPY ---------------- */
 
 let bird=document.getElementById("bird");
 let y=120;
@@ -234,6 +253,7 @@ let score=0;
 let running=false;
 let started=false;
 
+/* INIT */
 function initFlappy(){
 y=120;
 velocity=0;
@@ -247,15 +267,13 @@ document.getElementById("msg").innerHTML="";
 bird.style.top=y+"px";
 }
 
-function startGame(){
-if(started) return;
+/* START OR JUMP (AUTO START FIX) */
+function startOrJump(){
+if(!started){
 started=true;
 running=true;
 loop();
 }
-
-function jump(){
-if(!running) return;
 velocity=-8;
 }
 
@@ -287,9 +305,8 @@ function loop(){
 
 if(!running) return;
 
-/* FIX: only start physics AFTER start button */
-velocity += gravity;
-y += velocity;
+velocity+=gravity;
+y+=velocity;
 
 if(y<0 || y>295){
 gameOver();
