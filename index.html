@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Funora - Veedgames Production</title>
+<title>Funora - Vedgames Production</title>
 
 <style>
 
@@ -16,23 +16,6 @@ text-align:center;
 overflow:hidden;
 }
 
-/* floating glow background */
-body::before{
-content:"";
-position:fixed;
-width:200%;
-height:200%;
-background: radial-gradient(circle, rgba(0,255,200,0.08) 1px, transparent 1px);
-background-size:50px 50px;
-animation:move 25s linear infinite;
-}
-
-@keyframes move{
-from{transform:translateY(0);}
-to{transform:translateY(-200px);}
-}
-
-/* HEADER */
 header{
 padding:18px;
 font-size:26px;
@@ -48,19 +31,9 @@ opacity:0.8;
 color:#00ffcc;
 }
 
-/* slogan */
-#slogan{
-margin-top:5px;
-font-size:13px;
-color:#fff;
-opacity:0.8;
-}
-
-/* screens */
 .screen{display:none;padding:15px;}
 .active{display:block;}
 
-/* menu */
 .menu{
 display:grid;
 grid-template-columns:repeat(2,1fr);
@@ -82,17 +55,14 @@ transform:scale(1.08);
 box-shadow:0 0 20px #00ffcc;
 }
 
-/* inputs */
 input{
 padding:10px;
 width:80%;
 margin-top:10px;
 border:none;
 border-radius:8px;
-outline:none;
 }
 
-/* buttons */
 button{
 padding:10px 15px;
 margin-top:10px;
@@ -101,11 +71,6 @@ border-radius:8px;
 background:linear-gradient(45deg,#00ffcc,#00aaff);
 font-weight:bold;
 cursor:pointer;
-transition:0.3s;
-}
-
-button:hover{
-transform:scale(1.05);
 }
 
 .back{
@@ -113,39 +78,11 @@ background:linear-gradient(45deg,#ff4d4d,#ff0066);
 color:white;
 }
 
-/* FLAPPY */
-#game{
-width:100%;
-height:320px;
-background:#000;
-position:relative;
-overflow:hidden;
-border-radius:10px;
+.result{
+margin-top:10px;
+font-size:18px;
 }
 
-#bird{
-width:25px;
-height:25px;
-background:yellow;
-position:absolute;
-left:60px;
-top:120px;
-border-radius:50%;
-}
-
-.pipe{
-position:absolute;
-width:40px;
-background:green;
-right:-60px;
-}
-
-.gameOver{
-color:red;
-font-size:22px;
-}
-
-/* footer */
 footer{
 position:absolute;
 bottom:8px;
@@ -162,8 +99,7 @@ opacity:0.7;
 
 <header>
 🔥 FUNORA STUDIO
-<div class="brand">Veedgames Production</div>
-<div id="slogan"></div>
+<div class="brand">Vedgames Production</div>
 </header>
 
 <!-- HOME -->
@@ -174,7 +110,7 @@ opacity:0.7;
 <div class="card" onclick="openGame('lie')">🕵️ Lie</div>
 <div class="card" onclick="openGame('roast')">🔥 Roast</div>
 <div class="card" onclick="openGame('aura')">⚡ Aura</div>
-<div class="card" onclick="openGame('flappy')">🐤 Flappy</div>
+<div class="card" onclick="openGame('click')">👆 Click Battle</div>
 
 </div>
 </div>
@@ -209,58 +145,33 @@ opacity:0.7;
 <br><button class="back" onclick="back()">Back</button>
 </div>
 
-<!-- FLAPPY -->
-<div id="flappy" class="screen">
-<h2>🐤 Flappy Bird</h2>
+<!-- CLICK GAME -->
+<div id="click" class="screen">
+<h2>👆 Click Battle</h2>
 
-<div id="game">
-<div id="bird"></div>
-</div>
+<input id="playerName" placeholder="Enter your name">
 
-<h3>Score: <span id="score">0</span></h3>
+<h3>Clicks: <span id="score">0</span></h3>
 
-<button onclick="startGame()">START</button>
-<button onclick="jump()">JUMP</button>
+<button onclick="startClick()">START</button>
+<button onclick="clickMe()">CLICK</button>
 
 <div id="msg"></div>
 
 <br><button class="back" onclick="back()">Back</button>
 </div>
 
-<footer>
-© VEEDGAMES PRODUCTION
-</footer>
-
 <script>
-
-/* SLOGANS */
-let slogans=[
-"Play. Create. Dominate.",
-"Born for gamers.",
-"Fun never ends.",
-"Made to break boredom.",
-"Level up your fun.",
-"Gaming starts here.",
-"Click. Play. Win.",
-"Your fun universe.",
-"Chaos in every click.",
-"Veedgames = Legend Studio"
-];
-
-document.getElementById("slogan").innerText =
-slogans[Math.floor(Math.random()*slogans.length)];
 
 /* NAV */
 function openGame(id){
-resetFlappy();
+resetGame();
 document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
 document.getElementById(id).classList.add('active');
-
-if(id==="flappy") initFlappy();
 }
 
 function back(){
-resetFlappy();
+resetGame();
 document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
 document.getElementById('home').classList.add('active');
 }
@@ -273,14 +184,22 @@ document.getElementById("lieres").innerHTML=
 `"${t}" → ${Math.floor(Math.random()*100)}% FAKE 💀`;
 }
 
-/* ---------------- ROAST ---------------- */
+/* ---------------- ROAST (FIXED) ---------------- */
 function roast(){
-let n=document.getElementById("roastInput").value||"Player";
+let n=document.getElementById("roastInput").value;
+if(!n){
+if(navigator.vibrate) navigator.vibrate(200);
+document.getElementById("roastres").innerHTML="⚠️ Enter name!";
+return;
+}
+
 let arr=[
 n+" = NPC energy 💀",
 n+" brain lagging 😂",
-n+" buffering IRL"
+n+" buffering IRL",
+n+" still loading..."
 ];
+
 document.getElementById("roastres").innerHTML=
 arr[Math.floor(Math.random()*arr.length)];
 }
@@ -290,141 +209,51 @@ function aura(){
 let n=document.getElementById("auraInput").value||"Player";
 let a=Math.floor(Math.random()*1000);
 
-let lvl="";
-if(a>800) lvl="👑 GOD";
-else if(a>500) lvl="😎 STRONG";
-else lvl="💀 LOW";
+let lvl=a>800?"👑 GOD":a>500?"😎 STRONG":"💀 LOW";
 
 document.getElementById("aurares").innerHTML=
 `${n} → ${a} (${lvl})`;
 }
 
-/* ---------------- FLAPPY FIX ---------------- */
-let bird=document.getElementById("bird");
-let y=120;
-let velocity=0;
-let gravity=2;
+/* ---------------- CLICK BATTLE ---------------- */
 
-let pipes=[];
-let score=0;
-let running=false;
+let clicks=0;
+let started=false;
 
-function initFlappy(){
-y=120;
-velocity=0;
-pipes=[];
-score=0;
-running=false;
-
-document.getElementById("score").innerText=0;
-document.getElementById("msg").innerHTML="";
-bird.style.top=y+"px";
-}
-
-/* START FIX (IMPORTANT) */
-function startGame(){
-running=true;
-requestAnimationFrame(loop);
-}
-
-function jump(){
-if(!running) return;
-velocity=-8;
-}
-
-/* PIPE */
-function createPipe(){
-let gap=120;
-let topH=Math.floor(Math.random()*150)+50;
-
-let top=document.createElement("div");
-top.className="pipe";
-top.style.height=topH+"px";
-top.style.top="0px";
-top.style.right="-60px";
-
-let bottom=document.createElement("div");
-bottom.className="pipe";
-bottom.style.height=(320-topH-gap)+"px";
-bottom.style.bottom="0px";
-bottom.style.right="-60px";
-
-document.getElementById("game").appendChild(top);
-document.getElementById("game").appendChild(bottom);
-
-pipes.push({
-x:-60,
-top:top,
-bottom:bottom,
-topH:topH,
-scored:false
-});
-}
-
-/* GAME LOOP */
-function loop(){
-
-if(!running) return;
-
-velocity+=gravity;
-y+=velocity;
-
-if(y<0 || y>295){
-gameOver();
+function startClick(){
+let name=document.getElementById("playerName").value;
+if(!name){
+if(navigator.vibrate) navigator.vibrate(200);
+alert("Enter name!");
 return;
 }
 
-bird.style.top=y+"px";
-
-/* spawn */
-if(Math.random()<0.02){
-createPipe();
+started=true;
+clicks=0;
+document.getElementById("score").innerText=0;
+document.getElementById("msg").innerHTML="GO! 👆";
 }
 
-/* move */
-pipes.forEach(p=>{
-p.x+=3;
+function clickMe(){
+if(!started){
+document.getElementById("msg").innerHTML="Press START first!";
+return;
+}
 
-p.top.style.right=p.x+"px";
-p.bottom.style.right=p.x+"px";
+clicks++;
+document.getElementById("score").innerText=clicks;
 
-/* collision */
-if(p.x>40 && p.x<90){
-if(y<p.topH || y>p.topH+120){
-gameOver();
+if(clicks>=50){
+document.getElementById("msg").innerHTML="🔥 MAX POWER CLICKER!";
 }
 }
 
-/* score */
-if(!p.scored && p.x>90){
-score++;
-p.scored=true;
-document.getElementById("score").innerText=score;
-}
-
-/* cleanup */
-if(p.x>400){
-p.top.remove();
-p.bottom.remove();
-}
-});
-
-requestAnimationFrame(loop);
-}
-
-function gameOver(){
-running=false;
-document.getElementById("msg").innerHTML=
-"<div class='gameOver'>💀 GAME OVER</div>";
-}
-
-function resetFlappy(){
-running=false;
-pipes.forEach(p=>{
-if(p.top) p.top.remove();
-if(p.bottom) p.bottom.remove();
-});
-pipes=[];
+/* RESET */
+function resetGame(){
+clicks=0;
+started=false;
+document.getElementById("score").innerText=0;
+document.getElementById("msg").innerHTML="";
 }
 
 </script>
