@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Funora Studio</title>
+<title>Funora - Vedgames Production</title>
 
 <style>
 
@@ -20,6 +20,11 @@ header{
 padding:15px;
 background:#111;
 font-size:22px;
+}
+
+.brand{
+font-size:12px;
+opacity:0.7;
 }
 
 .screen{display:none;padding:15px;}
@@ -101,7 +106,10 @@ font-size:22px;
 
 <body>
 
-<header>🔥 FUNORA STUDIO</header>
+<header>
+🔥 FUNORA STUDIO
+<div class="brand">Vedgames Production</div>
+</header>
 
 <!-- HOME -->
 <div id="home" class="screen active">
@@ -156,6 +164,7 @@ font-size:22px;
 
 <h3>Score: <span id="score">0</span></h3>
 
+<button onclick="startGame()">START</button>
 <button onclick="jump()">JUMP</button>
 
 <div id="msg"></div>
@@ -165,43 +174,28 @@ font-size:22px;
 
 <script>
 
-/* NAV SYSTEM */
+/* NAV */
 function openGame(id){
-resetAllGames();
+resetFlappy();
 document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
 document.getElementById(id).classList.add('active');
-
-if(id === "flappy") startFlappy();
+if(id==="flappy") initFlappy();
 }
 
-/* GLOBAL BACK FIX */
 function back(){
-resetAllGames();
+resetFlappy();
 document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
 document.getElementById('home').classList.add('active');
-}
-
-/* RESET EVERYTHING (IMPORTANT FIX) */
-function resetAllGames(){
-
-/* reset flappy */
-running = false;
-pipes.forEach(p=>{
-if(p.top) p.top.remove();
-if(p.bottom) p.bottom.remove();
-});
-pipes = [];
-score = 0;
-
-document.getElementById("score").innerText = 0;
-document.getElementById("msg").innerHTML = "";
 }
 
 /* ---------------- LIE ---------------- */
 function lie(){
 let t=document.getElementById("lieInput").value;
-if(!t) return alert("Enter text!");
-document.getElementById("lieres").innerHTML =
+if(!t){
+document.getElementById("lieres").innerHTML="⚠️ Enter text!";
+return;
+}
+document.getElementById("lieres").innerHTML=
 `"${t}" → ${Math.floor(Math.random()*100)}% FAKE 💀`;
 }
 
@@ -211,9 +205,9 @@ let n=document.getElementById("roastInput").value||"Player";
 let arr=[
 n+" = NPC energy 💀",
 n+" brain lagging 😂",
-n+" runs on low RAM"
+n+" running low RAM"
 ];
-document.getElementById("roastres").innerHTML =
+document.getElementById("roastres").innerHTML=
 arr[Math.floor(Math.random()*arr.length)];
 }
 
@@ -227,7 +221,7 @@ if(a>800) lvl="👑 GOD";
 else if(a>500) lvl="😎 STRONG";
 else lvl="💀 LOW";
 
-document.getElementById("aurares").innerHTML =
+document.getElementById("aurares").innerHTML=
 `${n} → ${a} (${lvl})`;
 }
 
@@ -241,16 +235,20 @@ let pipes=[];
 let score=0;
 let running=false;
 
-function startFlappy(){
+function initFlappy(){
 y=120;
 velocity=0;
 pipes=[];
 score=0;
-running=true;
+running=false;
 
 document.getElementById("score").innerText=0;
+document.getElementById("msg").innerHTML="";
 bird.style.top=y+"px";
+}
 
+function startGame(){
+running=true;
 requestAnimationFrame(loop);
 }
 
@@ -259,9 +257,8 @@ if(!running) return;
 velocity=-8;
 }
 
-/* CREATE PIPE */
+/* PIPE */
 function createPipe(){
-
 let gap=120;
 let topH=Math.floor(Math.random()*150)+50;
 
@@ -289,9 +286,8 @@ scored:false
 });
 }
 
-/* GAME LOOP */
+/* LOOP */
 function loop(){
-
 if(!running) return;
 
 velocity+=gravity;
@@ -318,12 +314,12 @@ p.bottom.style.right=p.x+"px";
 
 /* collision */
 if(p.x>40 && p.x<90){
-if(y < p.topH || y > p.topH+120){
+if(y<p.topH || y>p.topH+120){
 gameOver();
 }
 }
 
-/* score ONLY ONCE */
+/* score */
 if(!p.scored && p.x>90){
 score++;
 p.scored=true;
@@ -344,6 +340,16 @@ function gameOver(){
 running=false;
 document.getElementById("msg").innerHTML=
 "<div class='gameOver'>💀 GAME OVER</div>";
+}
+
+/* RESET */
+function resetFlappy(){
+running=false;
+pipes.forEach(p=>{
+if(p.top) p.top.remove();
+if(p.bottom) p.bottom.remove();
+});
+pipes=[];
 }
 
 </script>
