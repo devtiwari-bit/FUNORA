@@ -31,6 +31,12 @@ opacity:0.8;
 color:#00ffcc;
 }
 
+#slogan{
+margin-top:5px;
+font-size:13px;
+opacity:0.8;
+}
+
 .screen{display:none;padding:15px;}
 .active{display:block;}
 
@@ -46,13 +52,7 @@ background:rgba(255,255,255,0.06);
 padding:20px;
 border-radius:14px;
 cursor:pointer;
-transition:0.3s;
 border:1px solid rgba(255,255,255,0.1);
-}
-
-.card:hover{
-transform:scale(1.08);
-box-shadow:0 0 20px #00ffcc;
 }
 
 input{
@@ -78,18 +78,18 @@ background:linear-gradient(45deg,#ff4d4d,#ff0066);
 color:white;
 }
 
-.result{
-margin-top:10px;
-font-size:18px;
-}
+/* screens */
+.screen{display:none}
+.active{display:block}
 
+/* footer */
 footer{
 position:absolute;
 bottom:8px;
 width:100%;
 font-size:12px;
 color:white;
-opacity:0.7;
+opacity:0.8;
 }
 
 </style>
@@ -100,6 +100,7 @@ opacity:0.7;
 <header>
 🔥 FUNORA STUDIO
 <div class="brand">Vedgames Production</div>
+<div id="slogan"></div>
 </header>
 
 <!-- HOME -->
@@ -145,35 +146,59 @@ opacity:0.7;
 <br><button class="back" onclick="back()">Back</button>
 </div>
 
-<!-- CLICK GAME -->
+<!-- CLICK BATTLE -->
 <div id="click" class="screen">
 <h2>👆 Click Battle</h2>
 
 <input id="playerName" placeholder="Enter your name">
 
+<h3>Time: <span id="time">10</span>s</h3>
 <h3>Clicks: <span id="score">0</span></h3>
 
-<button onclick="startClick()">START</button>
+<button onclick="startGame()">START</button>
 <button onclick="clickMe()">CLICK</button>
 
 <div id="msg"></div>
 
+<h3>🏆 Leaderboard</h3>
+<div id="board"></div>
+
 <br><button class="back" onclick="back()">Back</button>
 </div>
 
+<!-- FOOTER -->
+<footer>
+VEEDGAMES PRODUCTION
+</footer>
+
 <script>
 
+/* SLOGAN */
+let slogans=[
+"Play. Create. Dominate.",
+"Fun never ends.",
+"Click. Win. Repeat.",
+"Made for gamers.",
+"Level up your fun."
+];
+
+document.getElementById("slogan").innerText =
+slogans[Math.floor(Math.random()*slogans.length)];
+
 /* NAV */
-function openGame(id){
-resetGame();
+function show(id){
 document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
 document.getElementById(id).classList.add('active');
 }
 
+function openGame(id){
+resetGame();
+show(id);
+}
+
 function back(){
 resetGame();
-document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-document.getElementById('home').classList.add('active');
+show("home");
 }
 
 /* ---------------- LIE ---------------- */
@@ -184,20 +209,16 @@ document.getElementById("lieres").innerHTML=
 `"${t}" → ${Math.floor(Math.random()*100)}% FAKE 💀`;
 }
 
-/* ---------------- ROAST (FIXED) ---------------- */
+/* ---------------- ROAST ---------------- */
 function roast(){
 let n=document.getElementById("roastInput").value;
-if(!n){
-if(navigator.vibrate) navigator.vibrate(200);
-document.getElementById("roastres").innerHTML="⚠️ Enter name!";
-return;
-}
+if(!n) return alert("Enter name!");
 
 let arr=[
-n+" = NPC energy 💀",
+n+" = NPC 💀",
 n+" brain lagging 😂",
 n+" buffering IRL",
-n+" still loading..."
+n+" skill issue detected"
 ];
 
 document.getElementById("roastres").innerHTML=
@@ -215,23 +236,40 @@ document.getElementById("aurares").innerHTML=
 `${n} → ${a} (${lvl})`;
 }
 
-/* ---------------- CLICK BATTLE ---------------- */
+/* ---------------- CLICK GAME ---------------- */
 
 let clicks=0;
+let time=10;
+let timer=null;
 let started=false;
+let leaderboard=[];
 
-function startClick(){
+function startGame(){
+
 let name=document.getElementById("playerName").value;
 if(!name){
-if(navigator.vibrate) navigator.vibrate(200);
 alert("Enter name!");
 return;
 }
 
-started=true;
 clicks=0;
+time=10;
+started=true;
+
 document.getElementById("score").innerText=0;
-document.getElementById("msg").innerHTML="GO! 👆";
+document.getElementById("time").innerText=10;
+document.getElementById("msg").innerHTML="🔥 GO!";
+
+clearInterval(timer);
+
+timer=setInterval(()=>{
+time--;
+document.getElementById("time").innerText=time;
+
+if(time<=0){
+endGame(name);
+}
+},1000);
 }
 
 function clickMe(){
@@ -242,17 +280,41 @@ return;
 
 clicks++;
 document.getElementById("score").innerText=clicks;
-
-if(clicks>=50){
-document.getElementById("msg").innerHTML="🔥 MAX POWER CLICKER!";
 }
+
+function endGame(name){
+
+started=false;
+clearInterval(timer);
+
+leaderboard.push({name:name,score:clicks});
+leaderboard.sort((a,b)=>b.score-a.score);
+
+renderBoard();
+
+document.getElementById("msg").innerHTML="💀 TIME UP!";
+}
+
+function renderBoard(){
+
+let html="";
+leaderboard.slice(0,5).forEach((p,i)=>{
+html+=`${i+1}. ${p.name} → ${p.score}<br>`;
+});
+
+document.getElementById("board").innerHTML=html;
 }
 
 /* RESET */
 function resetGame(){
+
 clicks=0;
+time=10;
 started=false;
+clearInterval(timer);
+
 document.getElementById("score").innerText=0;
+document.getElementById("time").innerText=10;
 document.getElementById("msg").innerHTML="";
 }
 
