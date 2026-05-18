@@ -13,11 +13,12 @@ font-family:Arial;
 background: radial-gradient(circle at top, #0f1020, #000);
 color:white;
 text-align:center;
+overflow:hidden;
 }
 
 header{
-padding:20px;
-font-size:28px;
+padding:18px;
+font-size:26px;
 font-weight:bold;
 background: rgba(255,255,255,0.05);
 border-bottom:1px solid rgba(255,255,255,0.1);
@@ -28,16 +29,31 @@ font-size:12px;
 opacity:0.7;
 }
 
+.screen{
+display:none;
+padding:20px;
+animation:fade 0.4s ease;
+}
+
+.active{
+display:block;
+}
+
+@keyframes fade{
+from{opacity:0; transform:scale(0.95);}
+to{opacity:1; transform:scale(1);}
+}
+
 .menu{
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
-gap:15px;
-padding:20px;
+grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+gap:12px;
+padding:15px;
 }
 
 .card{
 background: rgba(255,255,255,0.06);
-padding:25px;
+padding:20px;
 border-radius:16px;
 cursor:pointer;
 transition:0.3s;
@@ -46,31 +62,11 @@ border:1px solid rgba(255,255,255,0.1);
 
 .card:hover{
 transform:scale(1.05);
-border-color:#00ffcc;
 box-shadow:0 0 15px #00ffcc;
 }
 
-.screen{
-display:none;
-padding:20px;
-}
-
-.active{
-display:block;
-}
-
-input{
-padding:12px;
-width:80%;
-max-width:300px;
-margin-top:10px;
-border-radius:10px;
-border:none;
-outline:none;
-}
-
 button{
-padding:12px 18px;
+padding:12px 16px;
 margin-top:10px;
 border:none;
 border-radius:10px;
@@ -84,14 +80,51 @@ background:linear-gradient(45deg,#ff4d4d,#ff0066);
 color:white;
 }
 
+input{
+padding:12px;
+width:80%;
+max-width:300px;
+margin-top:10px;
+border-radius:10px;
+border:none;
+}
+
 .result{
-margin-top:15px;
-font-size:20px;
+margin-top:12px;
+font-size:18px;
 }
 
 .glow{
 color:#00ffcc;
 text-shadow:0 0 10px #00ffcc;
+}
+
+/* FLAPPY BIRD */
+#gameArea{
+width:100%;
+height:300px;
+background:#111;
+position:relative;
+overflow:hidden;
+margin-top:10px;
+border-radius:10px;
+}
+
+.bird{
+width:30px;
+height:30px;
+background:yellow;
+position:absolute;
+left:50px;
+top:120px;
+border-radius:50%;
+}
+
+.pipe{
+width:40px;
+background:green;
+position:absolute;
+right:-40px;
 }
 
 </style>
@@ -101,29 +134,30 @@ text-shadow:0 0 10px #00ffcc;
 
 <header>
 🔥 FUNORA
-<div class="brand">Made by Vedgames Production</div>
+<div class="brand">Vedgames Production</div>
 </header>
 
 <!-- HOME -->
 <div id="home" class="screen active">
 
-<h2 class="glow">Select Game</h2>
+<h2 class="glow">Choose Game</h2>
 
 <div class="menu">
 
-<div class="card" onclick="openGame('lie')">🕵️ Lie Detector</div>
+<div class="card" onclick="openGame('lie')">🕵️ Lie</div>
 <div class="card" onclick="openGame('roast')">🔥 Roast</div>
 <div class="card" onclick="openGame('aura')">⚡ Aura</div>
 <div class="card" onclick="openGame('battle')">⚔️ Battle</div>
-<div class="card" onclick="openGame('click')">🏆 Click Battle</div>
+<div class="card" onclick="openGame('click')">🏆 Click</div>
+<div class="card" onclick="openGame('quiz')">🧠 Quiz</div>
+<div class="card" onclick="openGame('flappy')">🐤 Flappy</div>
 
 </div>
-
 </div>
 
 <!-- LIE -->
 <div id="lie" class="screen">
-<h2>🕵️ Lie Detector</h2>
+<h2>Lie Detector</h2>
 <button onclick="lie()">SCAN</button>
 <div class="result" id="lieres"></div>
 <br><button class="back" onclick="back()">Back</button>
@@ -131,8 +165,8 @@ text-shadow:0 0 10px #00ffcc;
 
 <!-- ROAST -->
 <div id="roast" class="screen">
-<h2>🔥 Roast Generator</h2>
-<input id="name" placeholder="Enter name">
+<h2>Roast</h2>
+<input id="name" placeholder="Name">
 <br>
 <button onclick="roast()">ROAST</button>
 <div class="result" id="roastres"></div>
@@ -141,48 +175,63 @@ text-shadow:0 0 10px #00ffcc;
 
 <!-- AURA -->
 <div id="aura" class="screen">
-<h2>⚡ Aura Checker</h2>
-<button onclick="aura()">Check Aura</button>
+<h2>Aura</h2>
+<button onclick="aura()">CHECK</button>
 <div class="result" id="aurares"></div>
 <br><button class="back" onclick="back()">Back</button>
 </div>
 
 <!-- BATTLE -->
 <div id="battle" class="screen">
-<h2>⚔️ Friend Battle</h2>
-<input id="p1" placeholder="Player 1"><br>
-<input id="p2" placeholder="Player 2"><br>
+<h2>Battle</h2>
+<input id="p1" placeholder="P1"><br>
+<input id="p2" placeholder="P2"><br>
 <button onclick="battle()">FIGHT</button>
 <div class="result" id="battleres"></div>
 <br><button class="back" onclick="back()">Back</button>
 </div>
 
-<!-- CLICK BATTLE -->
+<!-- CLICK -->
 <div id="click" class="screen">
-<h2>🏆 Click Battle (10 sec)</h2>
-
-<input id="player" placeholder="Your Name"><br>
-
+<h2>Click Battle</h2>
+<input id="player" placeholder="Name">
 <h3>Score: <span id="score">0</span></h3>
+<button onclick="clickGame()">CLICK</button>
+<div class="result" id="time"></div>
 
-<button onclick="clickMe()">CLICK TO START + PLAY</button>
-
-<div class="result" id="time">Tap to start game</div>
-
-<h3>🏅 Leaderboard</h3>
+<h3>Leaderboard</h3>
 <div id="board"></div>
 
 <br><button class="back" onclick="back()">Back</button>
 </div>
 
+<!-- QUIZ -->
+<div id="quiz" class="screen">
+<h2>🧠 Maths Quiz</h2>
+<h3 id="q"></h3>
+<input id="ans" placeholder="Answer">
+<br>
+<button onclick="check()">Submit</button>
+<div class="result" id="quizres"></div>
+<br><button class="back" onclick="back()">Back</button>
+</div>
+
+<!-- FLAPPY -->
+<div id="flappy" class="screen">
+<h2>🐤 Flappy Bird</h2>
+
+<div id="gameArea">
+<div class="bird" id="bird"></div>
+</div>
+
+<button onclick="jump()">JUMP</button>
+<div class="result" id="flappyres"></div>
+<br><button class="back" onclick="back()">Back</button>
+</div>
+
 <script>
 
-let score = 0;
-let time = 10;
-let timer;
-let timerStarted = false;
-
-// NAV
+/* NAV */
 function openGame(id){
 document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
 document.getElementById(id).classList.add('active');
@@ -193,135 +242,66 @@ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
 document.getElementById('home').classList.add('active');
 }
 
-// GAMES
+/* GAMES */
 function lie(){
-document.getElementById("lieres").innerHTML =
-Math.floor(Math.random()*100)+"% FAKE 💀";
+document.getElementById("lieres").innerHTML = Math.floor(Math.random()*100)+"% FAKE 💀";
 }
 
 function roast(){
-let n=document.getElementById("name").value;
-
-let roasts=[
-n+" has NPC energy 💀",
-n+" studies from reels 😂",
-n+" is buffering in life ⏳",
-n+" lost IQ in update 🤡"
-];
-
-document.getElementById("roastres").innerHTML =
-roasts[Math.floor(Math.random()*roasts.length)];
+let n=document.getElementById("name").value||"Player";
+let r=[n+" is lagging IRL 😂", n+" = NPC mode 💀", n+" has 2 brain cells 🤡"];
+document.getElementById("roastres").innerHTML=r[Math.floor(Math.random()*r.length)];
 }
 
 function aura(){
 let a=Math.floor(Math.random()*1000);
-
-let txt="";
-if(a>800) txt="👑 LEGENDARY AURA";
-else if(a>500) txt="😎 STRONG AURA";
-else txt="💀 NPC ENERGY";
-
-document.getElementById("aurares").innerHTML =
-a + " → " + txt;
+document.getElementById("aurares").innerHTML="Aura: "+a;
 }
 
 function battle(){
-let p1=document.getElementById("p1").value;
-let p2=document.getElementById("p2").value;
-
-let win=Math.random()<0.5?p1:p2;
-
-document.getElementById("battleres").innerHTML =
-"🏆 " + win + " WINS!";
+let p1=document.getElementById("p1").value||"P1";
+let p2=document.getElementById("p2").value||"P2";
+let w=Math.random()<0.5?p1:p2;
+document.getElementById("battleres").innerHTML=w+" WINS 🏆";
 }
 
-// CLICK BATTLE
-function clickMe(){
-
-let name = document.getElementById("player").value;
-
-// vibration error if no name
+/* CLICK GAME */
+let score=0;
+function clickGame(){
+let name=document.getElementById("player").value;
 if(!name){
-if(navigator.vibrate){
-navigator.vibrate([200,100,200]);
-}
-document.getElementById("time").innerHTML =
-"⚠️ Enter your name first!";
+if(navigator.vibrate) navigator.vibrate(200);
+document.getElementById("time").innerHTML="Enter name!";
 return;
 }
-
-// auto start timer
-if(!timerStarted){
-startGame();
-timerStarted = true;
-}
-
-if(time > 0){
 score++;
-document.getElementById("score").innerHTML = score;
+document.getElementById("score").innerHTML=score;
 }
 
+/* QUIZ */
+let num1=Math.floor(Math.random()*10);
+let num2=Math.floor(Math.random()*10);
+document.getElementById("q").innerHTML=`${num1} + ${num2} = ?`;
+
+function check(){
+let ans=document.getElementById("ans").value;
+let correct=num1+num2;
+document.getElementById("quizres").innerHTML=
+ans==correct?"✔ Correct":"❌ Wrong";
 }
 
-function startGame(){
+/* FLAPPY SIMPLE */
+let bird=document.getElementById("bird");
+let y=120;
 
-score = 0;
-time = 10;
-document.getElementById("score").innerHTML = 0;
-
-timer = setInterval(()=>{
-
-time--;
-document.getElementById("time").innerHTML =
-"⏱️ Time Left: " + time;
-
-if(time <= 0){
-clearInterval(timer);
-timerStarted = false;
-
-document.getElementById("time").innerHTML =
-"🏁 Finished! Score: " + score;
-
-saveScore();
-loadBoard();
+function jump(){
+y-=30;
+bird.style.top=y+"px";
+setTimeout(()=>{
+y+=20;
+bird.style.top=y+"px";
+},300);
 }
-
-},1000);
-
-}
-
-// leaderboard
-function saveScore(){
-
-let name = document.getElementById("player").value;
-
-let data = JSON.parse(localStorage.getItem("board") || "[]");
-
-data.push({name:name, score:score});
-
-data.sort((a,b)=>b.score-a.score);
-
-data = data.slice(0,5);
-
-localStorage.setItem("board", JSON.stringify(data));
-
-}
-
-function loadBoard(){
-
-let data = JSON.parse(localStorage.getItem("board") || "[]");
-
-let html="";
-
-data.forEach(d=>{
-html += `<p>🏅 ${d.name} - ${d.score}</p>`;
-});
-
-document.getElementById("board").innerHTML = html;
-
-}
-
-loadBoard();
 
 </script>
 
