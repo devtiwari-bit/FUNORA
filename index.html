@@ -3,33 +3,64 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Funora</title>
+<title>Funora - Veedgames Production</title>
 
 <style>
 
 body{
 margin:0;
 font-family:Arial;
-background:#07081a;
+background: radial-gradient(circle at top, #0b0b1f, #000);
 color:white;
 text-align:center;
 overflow:hidden;
 }
 
+/* floating glow background */
+body::before{
+content:"";
+position:fixed;
+width:200%;
+height:200%;
+background: radial-gradient(circle, rgba(0,255,200,0.08) 1px, transparent 1px);
+background-size:50px 50px;
+animation:move 25s linear infinite;
+}
+
+@keyframes move{
+from{transform:translateY(0);}
+to{transform:translateY(-200px);}
+}
+
+/* HEADER */
 header{
-padding:15px;
-background:#111;
-font-size:22px;
+padding:18px;
+font-size:26px;
+font-weight:bold;
+background:rgba(255,255,255,0.05);
+backdrop-filter: blur(10px);
+border-bottom:1px solid rgba(255,255,255,0.1);
 }
 
 .brand{
 font-size:12px;
-opacity:0.7;
+opacity:0.8;
+color:#00ffcc;
 }
 
+/* slogan */
+#slogan{
+margin-top:5px;
+font-size:13px;
+color:#fff;
+opacity:0.8;
+}
+
+/* screens */
 .screen{display:none;padding:15px;}
 .active{display:block;}
 
+/* menu */
 .menu{
 display:grid;
 grid-template-columns:repeat(2,1fr);
@@ -38,35 +69,51 @@ padding:10px;
 }
 
 .card{
-background:#1a1a2e;
+background:rgba(255,255,255,0.06);
 padding:20px;
-border-radius:12px;
+border-radius:14px;
 cursor:pointer;
+transition:0.3s;
+border:1px solid rgba(255,255,255,0.1);
 }
 
+.card:hover{
+transform:scale(1.08);
+box-shadow:0 0 20px #00ffcc;
+}
+
+/* inputs */
 input{
 padding:10px;
 width:80%;
 margin-top:10px;
 border:none;
 border-radius:8px;
+outline:none;
 }
 
+/* buttons */
 button{
 padding:10px 15px;
 margin-top:10px;
 border:none;
 border-radius:8px;
-background:#00ffcc;
+background:linear-gradient(45deg,#00ffcc,#00aaff);
 font-weight:bold;
 cursor:pointer;
+transition:0.3s;
+}
+
+button:hover{
+transform:scale(1.05);
 }
 
 .back{
-background:#ff4d4d;
+background:linear-gradient(45deg,#ff4d4d,#ff0066);
 color:white;
 }
 
+/* FLAPPY */
 #game{
 width:100%;
 height:320px;
@@ -98,13 +145,14 @@ color:red;
 font-size:22px;
 }
 
+/* footer */
 footer{
 position:absolute;
 bottom:8px;
 width:100%;
 font-size:12px;
 color:white;
-opacity:0.8;
+opacity:0.7;
 }
 
 </style>
@@ -134,7 +182,7 @@ opacity:0.8;
 <!-- LIE -->
 <div id="lie" class="screen">
 <h2>Lie Detector</h2>
-<input id="lieInput" placeholder="Enter text">
+<input id="lieInput" placeholder="Enter sentence">
 <br>
 <button onclick="lie()">SCAN</button>
 <div id="lieres"></div>
@@ -143,17 +191,17 @@ opacity:0.8;
 
 <!-- ROAST -->
 <div id="roast" class="screen">
-<h2>Roast</h2>
+<h2>Roast Generator</h2>
 <input id="roastInput" placeholder="Enter name">
 <br>
-<button onclick="roast()">GO</button>
+<button onclick="roast()">ROAST</button>
 <div id="roastres"></div>
 <br><button class="back" onclick="back()">Back</button>
 </div>
 
 <!-- AURA -->
 <div id="aura" class="screen">
-<h2>Aura</h2>
+<h2>Aura Checker</h2>
 <input id="auraInput" placeholder="Enter name">
 <br>
 <button onclick="aura()">CHECK</button>
@@ -171,7 +219,8 @@ opacity:0.8;
 
 <h3>Score: <span id="score">0</span></h3>
 
-<button onclick="startOrJump()">START / JUMP</button>
+<button onclick="startGame()">START</button>
+<button onclick="jump()">JUMP</button>
 
 <div id="msg"></div>
 
@@ -184,34 +233,36 @@ opacity:0.8;
 
 <script>
 
-/* SLOGAN */
+/* SLOGANS */
 let slogans=[
 "Play. Create. Dominate.",
+"Born for gamers.",
 "Fun never ends.",
-"Made for gamers.",
+"Made to break boredom.",
+"Level up your fun.",
+"Gaming starts here.",
 "Click. Play. Win.",
-"Chaos gaming hub.",
-"Level up your fun."
+"Your fun universe.",
+"Chaos in every click.",
+"Veedgames = Legend Studio"
 ];
 
 document.getElementById("slogan").innerText =
 slogans[Math.floor(Math.random()*slogans.length)];
 
-/* SCREEN SYSTEM */
-function show(id){
-document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-document.getElementById(id).classList.add('active');
-}
-
+/* NAV */
 function openGame(id){
 resetFlappy();
-show(id);
+document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+document.getElementById(id).classList.add('active');
+
 if(id==="flappy") initFlappy();
 }
 
 function back(){
 resetFlappy();
-show("home");
+document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+document.getElementById('home').classList.add('active');
 }
 
 /* ---------------- LIE ---------------- */
@@ -225,7 +276,11 @@ document.getElementById("lieres").innerHTML=
 /* ---------------- ROAST ---------------- */
 function roast(){
 let n=document.getElementById("roastInput").value||"Player";
-let arr=[n+" = NPC 💀", n+" brain lagging 😂", n+" buffering"];
+let arr=[
+n+" = NPC energy 💀",
+n+" brain lagging 😂",
+n+" buffering IRL"
+];
 document.getElementById("roastres").innerHTML=
 arr[Math.floor(Math.random()*arr.length)];
 }
@@ -235,14 +290,16 @@ function aura(){
 let n=document.getElementById("auraInput").value||"Player";
 let a=Math.floor(Math.random()*1000);
 
-let lvl=a>800?"GOD 👑":a>500?"STRONG 😎":"LOW 💀";
+let lvl="";
+if(a>800) lvl="👑 GOD";
+else if(a>500) lvl="😎 STRONG";
+else lvl="💀 LOW";
 
 document.getElementById("aurares").innerHTML=
 `${n} → ${a} (${lvl})`;
 }
 
-/* ---------------- FLAPPY ---------------- */
-
+/* ---------------- FLAPPY FIX ---------------- */
 let bird=document.getElementById("bird");
 let y=120;
 let velocity=0;
@@ -251,29 +308,27 @@ let gravity=2;
 let pipes=[];
 let score=0;
 let running=false;
-let started=false;
 
-/* INIT */
 function initFlappy(){
 y=120;
 velocity=0;
 pipes=[];
 score=0;
 running=false;
-started=false;
 
 document.getElementById("score").innerText=0;
 document.getElementById("msg").innerHTML="";
 bird.style.top=y+"px";
 }
 
-/* START OR JUMP (AUTO START FIX) */
-function startOrJump(){
-if(!started){
-started=true;
+/* START FIX (IMPORTANT) */
+function startGame(){
 running=true;
-loop();
+requestAnimationFrame(loop);
 }
+
+function jump(){
+if(!running) return;
 velocity=-8;
 }
 
@@ -297,10 +352,16 @@ bottom.style.right="-60px";
 document.getElementById("game").appendChild(top);
 document.getElementById("game").appendChild(bottom);
 
-pipes.push({x:-60,top,bottom,topH,scored:false});
+pipes.push({
+x:-60,
+top:top,
+bottom:bottom,
+topH:topH,
+scored:false
+});
 }
 
-/* LOOP */
+/* GAME LOOP */
 function loop(){
 
 if(!running) return;
@@ -359,7 +420,6 @@ document.getElementById("msg").innerHTML=
 
 function resetFlappy(){
 running=false;
-started=false;
 pipes.forEach(p=>{
 if(p.top) p.top.remove();
 if(p.bottom) p.bottom.remove();
