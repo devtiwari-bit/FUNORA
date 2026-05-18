@@ -10,36 +10,16 @@
 body{
 margin:0;
 font-family:Arial;
-background: radial-gradient(circle at top, #0b0b1f, #000);
+background:#07081a;
 color:white;
 text-align:center;
 overflow:hidden;
 }
 
-/* floating glow background */
-body::before{
-content:"";
-position:fixed;
-width:200%;
-height:200%;
-background: radial-gradient(circle, rgba(0,255,200,0.08) 1px, transparent 1px);
-background-size:50px 50px;
-animation:move 25s linear infinite;
-}
-
-@keyframes move{
-from{transform:translateY(0);}
-to{transform:translateY(-200px);}
-}
-
-/* HEADER */
 header{
-padding:18px;
-font-size:26px;
-font-weight:bold;
-background:rgba(255,255,255,0.05);
-backdrop-filter: blur(10px);
-border-bottom:1px solid rgba(255,255,255,0.1);
+padding:15px;
+background:#111;
+font-size:22px;
 }
 
 .brand{
@@ -48,19 +28,9 @@ opacity:0.8;
 color:#00ffcc;
 }
 
-/* slogan */
-#slogan{
-margin-top:5px;
-font-size:13px;
-color:#fff;
-opacity:0.8;
-}
-
-/* screens */
 .screen{display:none;padding:15px;}
 .active{display:block;}
 
-/* menu */
 .menu{
 display:grid;
 grid-template-columns:repeat(2,1fr);
@@ -69,51 +39,35 @@ padding:10px;
 }
 
 .card{
-background:rgba(255,255,255,0.06);
+background:#1a1a2e;
 padding:20px;
-border-radius:14px;
+border-radius:12px;
 cursor:pointer;
-transition:0.3s;
-border:1px solid rgba(255,255,255,0.1);
 }
 
-.card:hover{
-transform:scale(1.08);
-box-shadow:0 0 20px #00ffcc;
-}
-
-/* inputs */
 input{
 padding:10px;
 width:80%;
 margin-top:10px;
 border:none;
 border-radius:8px;
-outline:none;
 }
 
-/* buttons */
 button{
 padding:10px 15px;
 margin-top:10px;
 border:none;
 border-radius:8px;
-background:linear-gradient(45deg,#00ffcc,#00aaff);
+background:#00ffcc;
 font-weight:bold;
 cursor:pointer;
-transition:0.3s;
-}
-
-button:hover{
-transform:scale(1.05);
 }
 
 .back{
-background:linear-gradient(45deg,#ff4d4d,#ff0066);
+background:#ff4d4d;
 color:white;
 }
 
-/* FLAPPY */
 #game{
 width:100%;
 height:320px;
@@ -145,16 +99,6 @@ color:red;
 font-size:22px;
 }
 
-/* footer */
-footer{
-position:absolute;
-bottom:8px;
-width:100%;
-font-size:12px;
-color:white;
-opacity:0.7;
-}
-
 </style>
 </head>
 
@@ -163,7 +107,6 @@ opacity:0.7;
 <header>
 🔥 FUNORA STUDIO
 <div class="brand">Veedgames Production</div>
-<div id="slogan"></div>
 </header>
 
 <!-- HOME -->
@@ -182,7 +125,7 @@ opacity:0.7;
 <!-- LIE -->
 <div id="lie" class="screen">
 <h2>Lie Detector</h2>
-<input id="lieInput" placeholder="Enter sentence">
+<input id="lieInput" placeholder="Enter text">
 <br>
 <button onclick="lie()">SCAN</button>
 <div id="lieres"></div>
@@ -191,17 +134,17 @@ opacity:0.7;
 
 <!-- ROAST -->
 <div id="roast" class="screen">
-<h2>Roast Generator</h2>
+<h2>Roast</h2>
 <input id="roastInput" placeholder="Enter name">
 <br>
-<button onclick="roast()">ROAST</button>
+<button onclick="roast()">GO</button>
 <div id="roastres"></div>
 <br><button class="back" onclick="back()">Back</button>
 </div>
 
 <!-- AURA -->
 <div id="aura" class="screen">
-<h2>Aura Checker</h2>
+<h2>Aura</h2>
 <input id="auraInput" placeholder="Enter name">
 <br>
 <button onclick="aura()">CHECK</button>
@@ -227,42 +170,26 @@ opacity:0.7;
 <br><button class="back" onclick="back()">Back</button>
 </div>
 
-<footer>
-© VEEDGAMES PRODUCTION
-</footer>
-
 <script>
 
-/* SLOGANS */
-let slogans=[
-"Play. Create. Dominate.",
-"Born for gamers.",
-"Fun never ends.",
-"Made to break boredom.",
-"Level up your fun.",
-"Gaming starts here.",
-"Click. Play. Win.",
-"Your fun universe.",
-"Chaos in every click.",
-"Veedgames = Legend Studio"
-];
-
-document.getElementById("slogan").innerText =
-slogans[Math.floor(Math.random()*slogans.length)];
-
-/* NAV */
-function openGame(id){
-resetFlappy();
+/* SCREEN SYSTEM FIX */
+function show(id){
 document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
 document.getElementById(id).classList.add('active');
-
-if(id==="flappy") initFlappy();
 }
 
+/* BACK FIX */
 function back(){
 resetFlappy();
-document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-document.getElementById('home').classList.add('active');
+show('home');
+}
+
+/* OPEN GAME FIX */
+function openGame(id){
+resetFlappy();
+show(id);
+
+if(id==="flappy") initFlappy();
 }
 
 /* ---------------- LIE ---------------- */
@@ -276,11 +203,7 @@ document.getElementById("lieres").innerHTML=
 /* ---------------- ROAST ---------------- */
 function roast(){
 let n=document.getElementById("roastInput").value||"Player";
-let arr=[
-n+" = NPC energy 💀",
-n+" brain lagging 😂",
-n+" buffering IRL"
-];
+let arr=[n+" = NPC 💀", n+" brain lagging 😂", n+" buffering"];
 document.getElementById("roastres").innerHTML=
 arr[Math.floor(Math.random()*arr.length)];
 }
@@ -291,15 +214,16 @@ let n=document.getElementById("auraInput").value||"Player";
 let a=Math.floor(Math.random()*1000);
 
 let lvl="";
-if(a>800) lvl="👑 GOD";
-else if(a>500) lvl="😎 STRONG";
-else lvl="💀 LOW";
+if(a>800) lvl="GOD 👑";
+else if(a>500) lvl="STRONG 😎";
+else lvl="LOW 💀";
 
 document.getElementById("aurares").innerHTML=
 `${n} → ${a} (${lvl})`;
 }
 
 /* ---------------- FLAPPY FIX ---------------- */
+
 let bird=document.getElementById("bird");
 let y=120;
 let velocity=0;
@@ -308,6 +232,7 @@ let gravity=2;
 let pipes=[];
 let score=0;
 let running=false;
+let started=false;
 
 function initFlappy(){
 y=120;
@@ -315,16 +240,18 @@ velocity=0;
 pipes=[];
 score=0;
 running=false;
+started=false;
 
 document.getElementById("score").innerText=0;
 document.getElementById("msg").innerHTML="";
 bird.style.top=y+"px";
 }
 
-/* START FIX (IMPORTANT) */
 function startGame(){
+if(started) return;
+started=true;
 running=true;
-requestAnimationFrame(loop);
+loop();
 }
 
 function jump(){
@@ -352,22 +279,17 @@ bottom.style.right="-60px";
 document.getElementById("game").appendChild(top);
 document.getElementById("game").appendChild(bottom);
 
-pipes.push({
-x:-60,
-top:top,
-bottom:bottom,
-topH:topH,
-scored:false
-});
+pipes.push({x:-60,top,bottom,topH,scored:false});
 }
 
-/* GAME LOOP */
+/* LOOP */
 function loop(){
 
 if(!running) return;
 
-velocity+=gravity;
-y+=velocity;
+/* FIX: only start physics AFTER start button */
+velocity += gravity;
+y += velocity;
 
 if(y<0 || y>295){
 gameOver();
@@ -420,6 +342,7 @@ document.getElementById("msg").innerHTML=
 
 function resetFlappy(){
 running=false;
+started=false;
 pipes.forEach(p=>{
 if(p.top) p.top.remove();
 if(p.bottom) p.bottom.remove();
