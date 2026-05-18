@@ -1,1 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fun Hub</title>
 
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial;
+}
+
+body{
+background:#0f0f0f;
+color:white;
+min-height:100vh;
+}
+
+header{
+padding:20px;
+text-align:center;
+font-size:32px;
+font-weight:bold;
+background:#141414;
+box-shadow:0 0 20px #000;
+}
+
+.menu{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+gap:20px;
+padding:25px;
+}
+
+.card{
+background:#1f1f1f;
+padding:30px;
+border-radius:20px;
+text-align:center;
+font-size:22px;
+cursor:pointer;
+transition:0.3s;
+border:2px solid transparent;
+}
+
+.card:hover{
+transform:scale(1.05);
+border-color:#00ffcc;
+box-shadow:0 0 20px #00ffcc;
+}
+
+.screen{
+display:none;
+padding:30px;
+text-align:center;
+}
+
+.active{
+display:block;
+}
+
+input{
+width:90%;
+max-width:350px;
+padding:14px;
+border:none;
+border-radius:12px;
+margin-top:20px;
+font-size:18px;
+}
+
+button{
+padding:14px 24px;
+border:none;
+border-radius:12px;
+margin-top:20px;
+font-size:18px;
+cursor:pointer;
+background:#00ffcc;
+color:black;
+font-weight:bold;
+transition:0.3s;
+}
+
+button:hover{
+transform:scale(1.05);
+}
+
+.result{
+margin-top:30px;
+font-size:28px;
+font-weight:bold;
+}
+
+.back{
+background:#ff4444;
+color:white;
+margin-top:40px;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>🔥 FUN HUB 🔥</header>
+
+<!-- HOME MENU -->
+
+<div id="home" class="active">
+
+<div class="menu">
+
+<div class="card" onclick="openScreen('lie')">
+🕵️ Lie Detector
+</div>
+
+<div class="card" onclick="openScreen('roast')">
+🔥 Roast Generator
+</div>
+
+<div class="card" onclick="openScreen('aura')">
+⚡ Aura Calculator
+</div>
+
+<div class="card" onclick="openScreen('battle')">
+⚔️ Friend Battle
+</div>
+
+</div>
+
+</div>
+
+<!-- LIE DETECTOR -->
+
+<div id="lie" class="screen">
+
+<h1>🕵️ Lie Detector</h1>
+
+<input type="text" id="lieInput" placeholder="Type something...">
+
+<br>
+
+<button onclick="detectLie()">SCAN</button>
+
+<div class="result" id="lieResult"></div>
+
+<button class="back" onclick="goHome()">⬅ Back</button>
+
+</div>
+
+<!-- ROAST GENERATOR -->
+
+<div id="roast" class="screen">
+
+<h1>🔥 Roast Generator</h1>
+
+<input type="text" id="roastInput" placeholder="Enter your name">
+
+<br>
+
+<button onclick="generateRoast()">ROAST ME</button>
+
+<div class="result" id="roastResult"></div>
+
+<button class="back" onclick="goHome()">⬅ Back</button>
+
+</div>
+
+<!-- AURA CALCULATOR -->
+
+<div id="aura" class="screen">
+
+<h1>⚡ Aura Calculator</h1>
+
+<input type="text" id="auraInput" placeholder="Enter your name">
+
+<br>
+
+<button onclick="calculateAura()">CHECK AURA</button>
+
+<div class="result" id="auraResult"></div>
+
+<button class="back" onclick="goHome()">⬅ Back</button>
+
+</div>
+
+<!-- FRIEND BATTLE -->
+
+<div id="battle" class="screen">
+
+<h1>⚔️ Friend Battle</h1>
+
+<input type="text" id="name1" placeholder="Friend 1">
+
+<br>
+
+<input type="text" id="name2" placeholder="Friend 2">
+
+<br>
+
+<button onclick="battleFriends()">START BATTLE</button>
+
+<div class="result" id="battleResult"></div>
+
+<button class="back" onclick="goHome()">⬅ Back</button>
+
+</div>
+
+<script>
+
+function openScreen(id){
+
+document.getElementById("home").style.display="none";
+
+let screens=document.querySelectorAll(".screen");
+
+screens.forEach(screen=>{
+screen.style.display="none";
+});
+
+document.getElementById(id).style.display="block";
+
+}
+
+function goHome(){
+
+document.getElementById("home").style.display="block";
+
+let screens=document.querySelectorAll(".screen");
+
+screens.forEach(screen=>{
+screen.style.display="none";
+});
+
+}
+
+function detectLie(){
+
+let percent=Math.floor(Math.random()*100);
+
+let messages=[
+"🚨 MASSIVE LIE DETECTED",
+"💀 Bro even machine got shocked",
+"🤨 Suspicious activity found",
+"😂 Nobody believes this",
+"✅ Maybe true..."
+];
+
+let random=messages[Math.floor(Math.random()*messages.length)];
+
+document.getElementById("lieResult").innerHTML=
+percent + "% Fake<br><br>" + random;
+
+}
+
+function generateRoast(){
+
+let name=document.getElementById("roastInput").value;
+
+let roasts=[
+
+name + " studies from YouTube comments 💀",
+
+name + " has more excuses than marks 😂",
+
+name + " runs on 1% battery and confidence ⚡",
+
+name + " thinks buffering is a personality 😭",
+
+name + " would lose against calculator in maths 🤡"
+
+];
+
+let random=roasts[Math.floor(Math.random()*roasts.length)];
+
+document.getElementById("roastResult").innerHTML=random;
+
+}
+
+function calculateAura(){
+
+let aura=Math.floor(Math.random()*1000);
+
+let result="";
+
+if(aura>800){
+result="👑 LEGENDARY AURA";
+}
+else if(aura>500){
+result="😎 STRONG AURA";
+}
+else{
+result="💀 NPC ENERGY";
+}
+
+document.getElementById("auraResult").innerHTML=
+aura + " Aura Points<br><br>" + result;
+
+}
+
+function battleFriends(){
+
+let n1=document.getElementById("name1").value;
+let n2=document.getElementById("name2").value;
+
+let winner=Math.random()<0.5?n1:n2;
+
+let powers=[
+"🔥 Ultra Instinct",
+"⚡ God Speed",
+"💀 Villain Rage",
+"👑 Sigma Energy"
+];
+
+let power=powers[Math.floor(Math.random()*powers.length)];
+
+document.getElementById("battleResult").innerHTML=
+"🏆 " + winner + " WINS!<br><br>" + power;
+
+}
+
+</script>
+
+</body>
+</html>
