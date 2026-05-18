@@ -3,56 +3,23 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Funora - Vedgames Production</title>
+<title>Funora Studio</title>
 
 <style>
 
 body{
 margin:0;
 font-family:Arial;
-background: radial-gradient(circle at top, #0a0a1f, #000);
+background:#07081a;
 color:white;
 text-align:center;
 overflow:hidden;
 }
 
-/* animated particles */
-body::before{
-content:"";
-position:fixed;
-width:200%;
-height:200%;
-background-image: radial-gradient(white 1px, transparent 1px);
-background-size:50px 50px;
-opacity:0.05;
-animation:move 20s linear infinite;
-}
-
-@keyframes move{
-from{transform:translateY(0px);}
-to{transform:translateY(-200px);}
-}
-
 header{
-padding:18px;
-font-size:26px;
-font-weight:bold;
-background:rgba(255,255,255,0.05);
-backdrop-filter: blur(8px);
-border-bottom:1px solid rgba(255,255,255,0.1);
-position:relative;
-z-index:2;
-}
-
-.brand{
-font-size:12px;
-opacity:0.7;
-animation: glow 2s infinite alternate;
-}
-
-@keyframes glow{
-from{text-shadow:0 0 5px #00ffcc;}
-to{text-shadow:0 0 15px #00ffcc;}
+padding:15px;
+background:#111;
+font-size:22px;
 }
 
 .screen{display:none;padding:15px;}
@@ -63,42 +30,13 @@ display:grid;
 grid-template-columns:repeat(2,1fr);
 gap:10px;
 padding:10px;
-position:relative;
-z-index:2;
 }
 
 .card{
-background:rgba(255,255,255,0.06);
+background:#1a1a2e;
 padding:20px;
-border-radius:14px;
+border-radius:12px;
 cursor:pointer;
-transition:0.3s;
-border:1px solid rgba(255,255,255,0.1);
-}
-
-.card:hover{
-transform:scale(1.08);
-box-shadow:0 0 20px #00ffcc;
-}
-
-button{
-padding:10px 15px;
-margin-top:10px;
-border:none;
-border-radius:8px;
-background:linear-gradient(45deg,#00ffcc,#00aaff);
-font-weight:bold;
-cursor:pointer;
-transition:0.3s;
-}
-
-button:hover{
-transform:scale(1.05);
-}
-
-.back{
-background:linear-gradient(45deg,#ff4d4d,#ff0066);
-color:white;
 }
 
 input{
@@ -109,30 +47,53 @@ border:none;
 border-radius:8px;
 }
 
-.result{
+button{
+padding:10px 15px;
 margin-top:10px;
-font-size:18px;
+border:none;
+border-radius:8px;
+background:#00ffcc;
+font-weight:bold;
+cursor:pointer;
 }
 
-footer{
-position:absolute;
-bottom:10px;
+.back{
+background:#ff4d4d;
+color:white;
+}
+
+.result{margin-top:10px;font-size:18px}
+
+/* FLAPPY */
+#game{
 width:100%;
-font-size:14px;
-opacity:0.8;
-z-index:2;
+height:320px;
+background:#000;
+position:relative;
+overflow:hidden;
+border-radius:10px;
 }
 
-.slogan{
-color:#00ffcc;
-margin-top:5px;
-font-size:13px;
-animation:fade 3s ease-in-out;
+#bird{
+width:25px;
+height:25px;
+background:yellow;
+position:absolute;
+left:60px;
+top:120px;
+border-radius:50%;
 }
 
-@keyframes fade{
-from{opacity:0;}
-to{opacity:1;}
+.pipe{
+position:absolute;
+width:40px;
+background:green;
+right:-60px;
+}
+
+.gameOver{
+color:red;
+font-size:22px;
 }
 
 </style>
@@ -140,21 +101,17 @@ to{opacity:1;}
 
 <body>
 
-<header>
-🔥 FUNORA STUDIO
-<div class="brand">Made by Vedgames Production</div>
-<div class="slogan" id="slogan"></div>
-</header>
+<header>🔥 FUNORA STUDIO</header>
 
 <!-- HOME -->
 <div id="home" class="screen active">
 
 <div class="menu">
 
-<div class="card" onclick="openGame('lie')">🕵️ Lie Detector</div>
-<div class="card" onclick="openGame('roast')">🔥 Roast Generator</div>
-<div class="card" onclick="openGame('aura')">⚡ Aura Checker</div>
-<div class="card" onclick="openGame('flappy')">🐤 Flappy Bird</div>
+<div class="card" onclick="openGame('lie')">🕵️ Lie</div>
+<div class="card" onclick="openGame('roast')">🔥 Roast</div>
+<div class="card" onclick="openGame('aura')">⚡ Aura</div>
+<div class="card" onclick="openGame('flappy')">🐤 Flappy</div>
 
 </div>
 </div>
@@ -201,80 +158,193 @@ to{opacity:1;}
 
 <button onclick="jump()">JUMP</button>
 
+<div id="msg"></div>
+
 <br><button class="back" onclick="back()">Back</button>
 </div>
 
-<footer>
-© Vedgames Production • Ultimate Game Hub
-</footer>
-
 <script>
 
-/* NAV */
+/* NAV SYSTEM */
 function openGame(id){
+resetAllGames();
 document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
 document.getElementById(id).classList.add('active');
+
+if(id === "flappy") startFlappy();
 }
 
+/* GLOBAL BACK FIX */
 function back(){
+resetAllGames();
 document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
 document.getElementById('home').classList.add('active');
 }
 
-/* LIE */
+/* RESET EVERYTHING (IMPORTANT FIX) */
+function resetAllGames(){
+
+/* reset flappy */
+running = false;
+pipes.forEach(p=>{
+if(p.top) p.top.remove();
+if(p.bottom) p.bottom.remove();
+});
+pipes = [];
+score = 0;
+
+document.getElementById("score").innerText = 0;
+document.getElementById("msg").innerHTML = "";
+}
+
+/* ---------------- LIE ---------------- */
 function lie(){
 let t=document.getElementById("lieInput").value;
 if(!t) return alert("Enter text!");
-document.getElementById("lieres").innerHTML=
+document.getElementById("lieres").innerHTML =
 `"${t}" → ${Math.floor(Math.random()*100)}% FAKE 💀`;
 }
 
-/* ROAST */
+/* ---------------- ROAST ---------------- */
 function roast(){
-let n=document.getElementById("roastInput").value || "Player";
-
+let n=document.getElementById("roastInput").value||"Player";
 let arr=[
 n+" = NPC energy 💀",
-n+" runs on low RAM 😂",
-n+" is buffering in real life ⏳",
-n+" lost update patch 🤡"
+n+" brain lagging 😂",
+n+" runs on low RAM"
 ];
-
-document.getElementById("roastres").innerHTML=
+document.getElementById("roastres").innerHTML =
 arr[Math.floor(Math.random()*arr.length)];
 }
 
-/* AURA */
+/* ---------------- AURA ---------------- */
 function aura(){
-let n=document.getElementById("auraInput").value || "Player";
-
+let n=document.getElementById("auraInput").value||"Player";
 let a=Math.floor(Math.random()*1000);
 
 let lvl="";
-if(a>800) lvl="👑 GOD AURA";
+if(a>800) lvl="👑 GOD";
 else if(a>500) lvl="😎 STRONG";
 else lvl="💀 LOW";
 
-document.getElementById("aurares").innerHTML=
+document.getElementById("aurares").innerHTML =
 `${n} → ${a} (${lvl})`;
 }
 
-/* SLOGANS */
-let slogans=[
-"Play hard. Laugh harder.",
-"Made for chaos gamers only.",
-"Every click creates legend.",
-"Your fun, our code.",
-"Glitch the boredom away.",
-"One hub. Infinite games.",
-"Powered by pure fun energy.",
-"Warning: too addictive 💀",
-"Born to game, forced to study.",
-"Vedgames = Ultimate Chaos Studio"
-];
+/* ---------------- FLAPPY ---------------- */
+let bird=document.getElementById("bird");
+let y=120;
+let velocity=0;
+let gravity=2;
 
-document.getElementById("slogan").innerText =
-slogans[Math.floor(Math.random()*slogans.length)];
+let pipes=[];
+let score=0;
+let running=false;
+
+function startFlappy(){
+y=120;
+velocity=0;
+pipes=[];
+score=0;
+running=true;
+
+document.getElementById("score").innerText=0;
+bird.style.top=y+"px";
+
+requestAnimationFrame(loop);
+}
+
+function jump(){
+if(!running) return;
+velocity=-8;
+}
+
+/* CREATE PIPE */
+function createPipe(){
+
+let gap=120;
+let topH=Math.floor(Math.random()*150)+50;
+
+let top=document.createElement("div");
+top.className="pipe";
+top.style.height=topH+"px";
+top.style.top="0px";
+top.style.right="-60px";
+
+let bottom=document.createElement("div");
+bottom.className="pipe";
+bottom.style.height=(320-topH-gap)+"px";
+bottom.style.bottom="0px";
+bottom.style.right="-60px";
+
+document.getElementById("game").appendChild(top);
+document.getElementById("game").appendChild(bottom);
+
+pipes.push({
+x:-60,
+top:top,
+bottom:bottom,
+topH:topH,
+scored:false
+});
+}
+
+/* GAME LOOP */
+function loop(){
+
+if(!running) return;
+
+velocity+=gravity;
+y+=velocity;
+
+if(y<0 || y>295){
+gameOver();
+return;
+}
+
+bird.style.top=y+"px";
+
+/* spawn */
+if(Math.random()<0.02){
+createPipe();
+}
+
+/* move */
+pipes.forEach(p=>{
+p.x+=3;
+
+p.top.style.right=p.x+"px";
+p.bottom.style.right=p.x+"px";
+
+/* collision */
+if(p.x>40 && p.x<90){
+if(y < p.topH || y > p.topH+120){
+gameOver();
+}
+}
+
+/* score ONLY ONCE */
+if(!p.scored && p.x>90){
+score++;
+p.scored=true;
+document.getElementById("score").innerText=score;
+}
+
+/* cleanup */
+if(p.x>400){
+p.top.remove();
+p.bottom.remove();
+}
+});
+
+requestAnimationFrame(loop);
+}
+
+function gameOver(){
+running=false;
+document.getElementById("msg").innerHTML=
+"<div class='gameOver'>💀 GAME OVER</div>";
+}
 
 </script>
 
