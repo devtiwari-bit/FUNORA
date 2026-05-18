@@ -59,6 +59,16 @@ padding:20px;
 display:block;
 }
 
+input{
+padding:12px;
+width:80%;
+max-width:300px;
+margin-top:10px;
+border-radius:10px;
+border:none;
+outline:none;
+}
+
 button{
 padding:12px 18px;
 margin-top:10px;
@@ -72,15 +82,6 @@ cursor:pointer;
 .back{
 background:linear-gradient(45deg,#ff4d4d,#ff0066);
 color:white;
-}
-
-input{
-padding:12px;
-width:80%;
-max-width:300px;
-margin-top:10px;
-border-radius:10px;
-border:none;
 }
 
 .result{
@@ -130,8 +131,8 @@ text-shadow:0 0 10px #00ffcc;
 
 <!-- ROAST -->
 <div id="roast" class="screen">
-<h2>🔥 Roast</h2>
-<input id="name" placeholder="Name">
+<h2>🔥 Roast Generator</h2>
+<input id="name" placeholder="Enter name">
 <br>
 <button onclick="roast()">ROAST</button>
 <div class="result" id="roastres"></div>
@@ -140,17 +141,17 @@ text-shadow:0 0 10px #00ffcc;
 
 <!-- AURA -->
 <div id="aura" class="screen">
-<h2>⚡ Aura</h2>
-<button onclick="aura()">CHECK</button>
+<h2>⚡ Aura Checker</h2>
+<button onclick="aura()">Check Aura</button>
 <div class="result" id="aurares"></div>
 <br><button class="back" onclick="back()">Back</button>
 </div>
 
 <!-- BATTLE -->
 <div id="battle" class="screen">
-<h2>⚔️ Battle</h2>
-<input id="p1" placeholder="P1"><br>
-<input id="p2" placeholder="P2"><br>
+<h2>⚔️ Friend Battle</h2>
+<input id="p1" placeholder="Player 1"><br>
+<input id="p2" placeholder="Player 2"><br>
 <button onclick="battle()">FIGHT</button>
 <div class="result" id="battleres"></div>
 <br><button class="back" onclick="back()">Back</button>
@@ -164,10 +165,9 @@ text-shadow:0 0 10px #00ffcc;
 
 <h3>Score: <span id="score">0</span></h3>
 
-<button onclick="startGame()">Start</button>
-<button onclick="clickMe()">CLICK ME</button>
+<button onclick="clickMe()">CLICK TO START + PLAY</button>
 
-<div class="result" id="time"></div>
+<div class="result" id="time">Tap to start game</div>
 
 <h3>🏅 Leaderboard</h3>
 <div id="board"></div>
@@ -177,10 +177,10 @@ text-shadow:0 0 10px #00ffcc;
 
 <script>
 
-let score=0;
-let time=10;
-let running=false;
+let score = 0;
+let time = 10;
 let timer;
+let timerStarted = false;
 
 // NAV
 function openGame(id){
@@ -193,7 +193,7 @@ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
 document.getElementById('home').classList.add('active');
 }
 
-// OLD GAMES
+// GAMES
 function lie(){
 document.getElementById("lieres").innerHTML =
 Math.floor(Math.random()*100)+"% FAKE 💀";
@@ -201,74 +201,124 @@ Math.floor(Math.random()*100)+"% FAKE 💀";
 
 function roast(){
 let n=document.getElementById("name").value;
-let arr=[
+
+let roasts=[
+n+" has NPC energy 💀",
+n+" studies from reels 😂",
 n+" is buffering in life ⏳",
-n+" has 2GB brain RAM 😂",
-n+" studies from reels 💀"
+n+" lost IQ in update 🤡"
 ];
+
 document.getElementById("roastres").innerHTML =
-arr[Math.floor(Math.random()*arr.length)];
+roasts[Math.floor(Math.random()*roasts.length)];
 }
 
 function aura(){
 let a=Math.floor(Math.random()*1000);
-document.getElementById("aurares").innerHTML="Aura: "+a;
+
+let txt="";
+if(a>800) txt="👑 LEGENDARY AURA";
+else if(a>500) txt="😎 STRONG AURA";
+else txt="💀 NPC ENERGY";
+
+document.getElementById("aurares").innerHTML =
+a + " → " + txt;
 }
 
 function battle(){
 let p1=document.getElementById("p1").value;
 let p2=document.getElementById("p2").value;
+
 let win=Math.random()<0.5?p1:p2;
-document.getElementById("battleres").innerHTML=win+" WINS 🏆";
+
+document.getElementById("battleres").innerHTML =
+"🏆 " + win + " WINS!";
 }
 
 // CLICK BATTLE
+function clickMe(){
+
+let name = document.getElementById("player").value;
+
+// vibration error if no name
+if(!name){
+if(navigator.vibrate){
+navigator.vibrate([200,100,200]);
+}
+document.getElementById("time").innerHTML =
+"⚠️ Enter your name first!";
+return;
+}
+
+// auto start timer
+if(!timerStarted){
+startGame();
+timerStarted = true;
+}
+
+if(time > 0){
+score++;
+document.getElementById("score").innerHTML = score;
+}
+
+}
+
 function startGame(){
-score=0;
-time=10;
-running=true;
-document.getElementById("score").innerHTML=score;
 
-timer=setInterval(()=>{
+score = 0;
+time = 10;
+document.getElementById("score").innerHTML = 0;
+
+timer = setInterval(()=>{
+
 time--;
-document.getElementById("time").innerHTML="Time: "+time;
+document.getElementById("time").innerHTML =
+"⏱️ Time Left: " + time;
 
-if(time<=0){
+if(time <= 0){
 clearInterval(timer);
-running=false;
+timerStarted = false;
+
+document.getElementById("time").innerHTML =
+"🏁 Finished! Score: " + score;
+
 saveScore();
 loadBoard();
 }
+
 },1000);
+
 }
 
-function clickMe(){
-if(running){
-score++;
-document.getElementById("score").innerHTML=score;
-}
-}
-
+// leaderboard
 function saveScore(){
-let name=document.getElementById("player").value || "Player";
-let data=JSON.parse(localStorage.getItem("board")||"[]");
 
-data.push({name:name,score:score});
+let name = document.getElementById("player").value;
+
+let data = JSON.parse(localStorage.getItem("board") || "[]");
+
+data.push({name:name, score:score});
+
 data.sort((a,b)=>b.score-a.score);
-data=data.slice(0,5);
 
-localStorage.setItem("board",JSON.stringify(data));
+data = data.slice(0,5);
+
+localStorage.setItem("board", JSON.stringify(data));
+
 }
 
 function loadBoard(){
-let data=JSON.parse(localStorage.getItem("board")||"[]");
+
+let data = JSON.parse(localStorage.getItem("board") || "[]");
+
 let html="";
 
 data.forEach(d=>{
-html+=`<p>🏅 ${d.name} - ${d.score}</p>`;
+html += `<p>🏅 ${d.name} - ${d.score}</p>`;
 });
 
-document.getElementById("board").innerHTML=html;
+document.getElementById("board").innerHTML = html;
+
 }
 
 loadBoard();
